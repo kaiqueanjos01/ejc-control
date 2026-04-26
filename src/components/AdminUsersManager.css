@@ -1,0 +1,275 @@
+.admin-users-container {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-users-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.admin-users-container h3 {
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #555;
+}
+
+.admin-restricted {
+  padding: 20px;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  color: #856404;
+  text-align: center;
+}
+
+.admin-error {
+  padding: 15px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+  margin-bottom: 20px;
+}
+
+.admin-info {
+  padding: 12px;
+  background: #e7f3ff;
+  border-left: 4px solid #2196f3;
+  margin-bottom: 20px;
+  border-radius: 2px;
+}
+
+.admin-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #1976d2;
+}
+
+.novo-convite-form {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background: #f9f9f9;
+}
+
+.novo-convite-form h3 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background: #2196f3;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.btn-primary:hover {
+  background: #1976d2;
+}
+
+.btn-success {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #45a049;
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #da190b;
+}
+
+.btn-secondary {
+  background: #757575;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #616161;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-table thead {
+  background: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.admin-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+}
+
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.admin-table tbody tr.is-current {
+  background: #f0f7ff;
+}
+
+.admin-table select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.admin-table select:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.badge-admin {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-moderador {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.badge-visualizador {
+  background: #f3e5f5;
+  color: #6a1b9a;
+}
+
+.badge-current {
+  background: #ffd54f;
+  color: #f57f17;
+  margin-left: 8px;
+}
+
+.text-muted {
+  color: #999;
+  font-size: 13px;
+}
+
+.empty-state {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.convites-section {
+  border-top: 2px solid #e0e0e0;
+  padding-top: 20px;
+  margin-bottom: 30px;
+}
+
+.admins-section {
+  border-top: 2px solid #e0e0e0;
+  padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .admin-users-container {
+    padding: 15px;
+  }
+
+  .table-responsive {
+    font-size: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}

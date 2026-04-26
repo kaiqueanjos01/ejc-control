@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import { AdminLayout } from '../../components/AdminLayout'
+import AdminUsersManager from '../../components/AdminUsersManager'
 import { useEncontro } from '../../hooks/useEncontro'
+import { useAdminRole } from '../../hooks/useAdminRole'
 import { buscarEncontro, atualizarEncontro } from '../../services/encontros'
 import { listarCampos, criarCampo, removerCampo, reordenarCampos } from '../../services/campos'
 
 export function Configuracoes() {
   const { encontroId } = useEncontro()
+  const { role } = useAdminRole()
   const navigate = useNavigate()
   const [encontro, setEncontro] = useState(null)
   const [campos, setCampos] = useState([])
@@ -80,6 +83,9 @@ export function Configuracoes() {
   return (
     <AdminLayout>
       <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>Configurações do Encontro</h2>
+
+      {/* Gerenciar Admins - Apenas para Admins */}
+      {role === 'admin' && <AdminUsersManager />}
 
       {/* Dados do encontro */}
       <section style={{ marginBottom: 28 }}>
