@@ -1,0 +1,231 @@
+/* AdminLayout Styles */
+.admin-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+}
+
+/* Header/Navigation */
+.admin-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.admin-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 var(--space-6);
+  max-width: 100%;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-right: var(--space-8);
+}
+
+.admin-brand-logo {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.admin-brand-text {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+.admin-nav-items {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  flex: 1;
+}
+
+.admin-nav-link {
+  position: relative;
+  padding: var(--space-3) var(--space-5);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  border-radius: var(--radius-md);
+}
+
+.admin-nav-link:hover {
+  color: var(--primary-600);
+  background: var(--primary-50);
+}
+
+.admin-nav-link.active {
+  color: var(--primary-600);
+  background: var(--primary-50);
+  border-bottom: 2px solid var(--primary-600);
+}
+
+.admin-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-left: auto;
+}
+
+.admin-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--gray-50);
+}
+
+.admin-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-500), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.admin-user-role {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-logout-btn {
+  padding: var(--space-2) var(--space-4);
+  background: none;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-md);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.admin-logout-btn:hover {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.admin-logout-btn:active {
+  transform: scale(0.98);
+}
+
+/* Main Content */
+.admin-main {
+  flex: 1;
+  padding: var(--space-8);
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.admin-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.admin-content-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.admin-content-title h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--gray-900);
+}
+
+.admin-content-subtitle {
+  font-size: 0.9375rem;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-navbar {
+    height: 56px;
+    padding: 0 var(--space-4);
+  }
+
+  .admin-brand {
+    margin-right: var(--space-4);
+  }
+
+  .admin-brand-logo {
+    font-size: 1.25rem;
+  }
+
+  .admin-nav-items {
+    display: none;
+  }
+
+  .admin-nav-link {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.875rem;
+  }
+
+  .admin-user-info {
+    display: none;
+  }
+
+  .admin-main {
+    padding: var(--space-4);
+  }
+
+  .admin-content-title h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-navbar {
+    flex-wrap: wrap;
+  }
+
+  .admin-brand-text {
+    display: none;
+  }
+
+  .admin-logout-btn {
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.75rem;
+  }
+}
