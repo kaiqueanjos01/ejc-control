@@ -20,9 +20,7 @@ CREATE TABLE admin_invites (
   expira_em TIMESTAMP WITH TIME ZONE NOT NULL,
   criado_por UUID NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
   criado_em TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  usado_em TIMESTAMP WITH TIME ZONE,
-  INDEX idx_token (token),
-  INDEX idx_email (email)
+  usado_em TIMESTAMP WITH TIME ZONE
 );
 
 -- Enable RLS
@@ -133,8 +131,10 @@ CREATE POLICY "admin_delete_invites" ON admin_invites
     )
   );
 
--- Create index for faster queries
+-- Create indexes
 CREATE INDEX idx_admin_users_auth_user_id ON admin_users(auth_user_id);
 CREATE INDEX idx_admin_users_role ON admin_users(role);
 CREATE INDEX idx_admin_users_ativo ON admin_users(ativo);
+CREATE INDEX idx_admin_invites_token ON admin_invites(token);
+CREATE INDEX idx_admin_invites_email ON admin_invites(email);
 CREATE INDEX idx_admin_invites_expira_em ON admin_invites(expira_em);
