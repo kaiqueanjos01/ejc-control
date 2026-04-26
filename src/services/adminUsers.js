@@ -1,5 +1,4 @@
 import { supabase } from '../lib/supabase'
-import { generatePassword } from '../utils/crypto'
 
 // Permissões por role
 export const ROLE_PERMISSIONS = {
@@ -256,9 +255,13 @@ export async function deletarAdmin(adminId) {
 
 // Função auxiliar para gerar token de convite
 function generateInviteToken() {
-  return crypto.getRandomValues(new Uint8Array(32)).reduce((acc, byte) => {
-    return acc + byte.toString(16).padStart(2, '0')
-  }, '')
+  // Gerar string aleatória de 32 caracteres
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let token = ''
+  for (let i = 0; i < 32; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return token
 }
 
 // Descrições dos roles
