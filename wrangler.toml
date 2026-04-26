@@ -1,0 +1,23 @@
+name = "ejc-control"
+type = "javascript"
+account_id = ""
+workers_dev = true
+route = ""
+zone_id = ""
+
+[env.production]
+route = ""
+zone_id = ""
+
+[build]
+command = "npm run build"
+cwd = "./"
+watch_paths = ["src/**/*.js", "src/**/*.jsx"]
+
+[build.upload]
+format = "service-worker"
+main = "./dist/index.js"
+
+[env.production.vars]
+VITE_SUPABASE_URL = "https://mxundfxxthdvlxwaeunb.supabase.co"
+VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14dW5kZnh4dGhkdmx4d2FldW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMjQzOTIsImV4cCI6MjA5MjgwMDM5Mn0.iabWyo2e5qGy039Y1cCBHNTVbjofalt9IV1DUYULXVI"
