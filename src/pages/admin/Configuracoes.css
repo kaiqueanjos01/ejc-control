@@ -1,0 +1,344 @@
+/* Configuracoes Page Styles - Premium Light Luxury Design */
+
+/* Page Title */
+.config-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--space-8);
+  letter-spacing: -0.02em;
+}
+
+/* Section Styling */
+.config-section {
+  margin-bottom: var(--space-8);
+  animation: slideInUp var(--transition-slow);
+}
+
+.config-section-title {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  margin-bottom: var(--space-3);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.config-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  gap: var(--space-4);
+}
+
+/* Form Styling */
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.config-row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.config-form-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.config-form-actions .btn {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Success Message */
+.config-success-message {
+  font-size: 0.875rem;
+  color: var(--success);
+  padding: var(--space-2) var(--space-3);
+  background: var(--success-light);
+  border-radius: var(--radius-md);
+  margin: 0;
+}
+
+/* QR Code Section */
+.config-url-text {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: var(--space-3);
+  word-break: break-all;
+  margin: 0 0 var(--space-3) 0;
+}
+
+.config-qr-container {
+  background: var(--white);
+  display: inline-block;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  margin-bottom: var(--space-3);
+}
+
+.config-qr-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Add Field Form */
+.config-add-field-form {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  animation: slideInUp var(--transition-base);
+}
+
+.config-field-inputs {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-3);
+}
+
+.config-field-label-input {
+  flex: 2;
+}
+
+.config-field-type-select {
+  flex: 1;
+}
+
+.config-field-checkboxes {
+  display: flex;
+  gap: var(--space-6);
+  font-size: 0.875rem;
+}
+
+.config-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  color: var(--gray-700);
+  font-weight: 500;
+  user-select: none;
+}
+
+.config-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary-600);
+}
+
+/* Empty State */
+.config-empty-state {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  padding: var(--space-3);
+  margin: 0;
+}
+
+/* Fields List */
+.config-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.config-field-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-base);
+}
+
+.config-field-item:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--primary-300);
+}
+
+/* Field Info */
+.config-field-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.config-field-label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--gray-900);
+}
+
+.config-field-type {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  background: var(--gray-100);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.config-field-required {
+  font-size: 0.75rem;
+  color: var(--danger);
+  background: var(--danger-light);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.config-field-visibility {
+  font-size: 0.75rem;
+  color: var(--success);
+  background: var(--success-light);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+/* Field Actions */
+.config-field-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.config-icon-btn {
+  background: transparent;
+  border: 1px solid var(--gray-300);
+  color: var(--gray-600);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.config-icon-btn:hover:not(:disabled) {
+  background: var(--primary-50);
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+}
+
+.config-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.config-icon-btn--danger {
+  color: var(--danger);
+  border-color: var(--danger-light);
+}
+
+.config-icon-btn--danger:hover:not(:disabled) {
+  background: var(--danger-light);
+  border-color: var(--danger);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .config-page-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .config-section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .config-section-header .btn {
+    width: 100%;
+  }
+
+  .config-row-two {
+    grid-template-columns: 1fr;
+  }
+
+  .config-field-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .config-field-checkboxes {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .config-field-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .config-field-info {
+    width: 100%;
+  }
+
+  .config-field-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .config-form-actions {
+    flex-direction: column;
+  }
+
+  .config-form-actions .btn {
+    flex: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .config-page-title {
+    font-size: 1.25rem;
+  }
+
+  .config-section {
+    margin-bottom: var(--space-6);
+  }
+
+  .config-field-info {
+    gap: var(--space-2);
+  }
+
+  .config-field-label {
+    font-size: 0.875rem;
+  }
+
+  .config-field-actions {
+    gap: var(--space-1);
+  }
+
+  .config-icon-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+}

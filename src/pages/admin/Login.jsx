@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import './Login.css'
 
 export function Login() {
   const navigate = useNavigate()
@@ -23,42 +24,43 @@ export function Login() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div style={{ width: '100%', maxWidth: 360 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>EJC Control</h1>
-        <p style={{ color: '#aaa', fontSize: 13, marginBottom: 28 }}>Acesso da equipe</p>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={senha}
-            onChange={e => setSenha(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          {erro && <p style={{ color: '#f87171', fontSize: 13 }}>{erro}</p>}
-          <button type="submit" disabled={loading} style={btnStyle}>
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <h1 className="login-title">EJC Control</h1>
+          <p className="login-subtitle">Acesso da equipe</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Senha"
+              value={senha}
+              onChange={e => setSenha(e.target.value)}
+              required
+              className="form-input"
+            />
+          </div>
+
+          {erro && <div className="login-error">{erro}</div>}
+
+          <button type="submit" disabled={loading} className="btn btn-primary btn-full">
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
       </div>
     </div>
   )
-}
-
-const inputStyle = {
-  width: '100%', padding: '12px 14px', borderRadius: 8,
-  border: '1px solid #333', background: '#1a1a1a', color: '#e0e0e0', fontSize: 15,
-}
-const btnStyle = {
-  width: '100%', padding: '13px 0', borderRadius: 8, border: 'none',
-  background: '#3a86ff', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer',
 }

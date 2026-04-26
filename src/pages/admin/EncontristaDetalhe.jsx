@@ -6,6 +6,7 @@ import { buscarEncontristaPorId, atualizarEncontrista } from '../../services/enc
 import { listarCampos } from '../../services/campos'
 import { listarGrupos, atribuirGrupo } from '../../services/grupos'
 import { DynamicForm } from '../../components/DynamicForm'
+import './EncontristaDetalhe.css'
 
 export function EncontristaDetalhe() {
   const { id } = useParams()
@@ -43,7 +44,7 @@ export function EncontristaDetalhe() {
       telefone: encontrista.telefone,
       dados_extras: valores,
     })
-    setMensagem('Salvo!')
+    setMensagem('Salvo com sucesso!')
     setTimeout(() => setMensagem(null), 2000)
     setSalvando(false)
   }
@@ -60,40 +61,44 @@ export function EncontristaDetalhe() {
     setTimeout(() => setMensagem(null), 2000)
   }
 
-  if (loading) return <AdminLayout><p>Carregando...</p></AdminLayout>
+  if (loading) return <AdminLayout><p className="text-secondary">Carregando...</p></AdminLayout>
 
   return (
     <AdminLayout>
-      <button onClick={() => navigate('/admin/crm')} style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', marginBottom: 16, fontSize: 13 }}>
+      <button onClick={() => navigate('/admin/crm')} className="btn-back">
         ← Voltar ao CRM
       </button>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
-        <div>
-          <h2 style={{ fontSize: 20, fontWeight: 700 }}>{encontrista.nome}</h2>
-          <p style={{ color: '#aaa', fontSize: 13, marginTop: 2 }}>{encontrista.telefone}</p>
+
+      <div className="encontrista-header">
+        <div className="header-info">
+          <h2 className="header-title">{encontrista.nome}</h2>
+          <p className="header-phone">{encontrista.telefone}</p>
           {encontrista.checkin_at && (
-            <p style={{ color: '#52b788', fontSize: 12, marginTop: 4 }}>
-              ✓ Check-in: {new Date(encontrista.checkin_at).toLocaleString('pt-BR')}
-            </p>
+            <div className="badge badge-success">
+              <span>✓ Check-in: {new Date(encontrista.checkin_at).toLocaleString('pt-BR')}</span>
+            </div>
           )}
         </div>
-        <button onClick={copiarLinkCheckin} style={btnSecStyle}>QR Check-in</button>
+        <button onClick={copiarLinkCheckin} className="btn btn-secondary btn-sm">
+          QR Check-in
+        </button>
       </div>
 
-      <div style={{ marginBottom: 24 }}>
-        <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 6 }}>Grupo</label>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="grupo-section">
+        <label className="form-label">Atribuir Grupo</label>
+        <div className="grupo-buttons">
           <button
             onClick={() => handleGrupo(null)}
-            style={{ ...grupoBtn, borderColor: !encontrista.grupo_id ? '#fff' : '#333' }}
+            className={`grupo-btn ${!encontrista.grupo_id ? 'active' : ''}`}
           >
-            Sem grupo
+            ◯ Sem grupo
           </button>
           {grupos.map(g => (
             <button
               key={g.id}
               onClick={() => handleGrupo(g.id)}
-              style={{ ...grupoBtn, borderColor: encontrista.grupo_id === g.id ? g.cor : '#333', color: g.cor }}
+              className={`grupo-btn ${encontrista.grupo_id === g.id ? 'active' : ''}`}
+              style={{ '--grupo-color': g.cor }}
             >
               ● {g.nome}
             </button>
@@ -101,48 +106,41 @@ export function EncontristaDetalhe() {
         </div>
       </div>
 
-      <form onSubmit={handleSalvar} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div>
-          <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 4 }}>Nome</label>
+      <form onSubmit={handleSalvar} className="encontrista-form">
+        <div className="form-group">
+          <label className="form-label">Nome</label>
           <input
+            type="text"
+            className="form-input"
             value={encontrista.nome}
             onChange={e => setEncontrista(prev => ({ ...prev, nome: e.target.value }))}
-            style={inputStyle}
           />
         </div>
-        <div>
-          <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 4 }}>Telefone</label>
+
+        <div className="form-group">
+          <label className="form-label">Telefone</label>
           <input
+            type="tel"
+            className="form-input"
             value={encontrista.telefone}
             onChange={e => setEncontrista(prev => ({ ...prev, telefone: e.target.value }))}
-            style={inputStyle}
           />
         </div>
+
         {campos.length > 0 && (
           <DynamicForm campos={campos} valores={valores} onChange={setValores} />
         )}
-        {mensagem && <p style={{ color: '#52b788', fontSize: 13 }}>{mensagem}</p>}
-        <button type="submit" disabled={salvando} style={btnStyle}>
-          {salvando ? 'Salvando...' : 'Salvar'}
+
+        {mensagem && (
+          <div className="alert alert-success">
+            <p className="alert-message">{mensagem}</p>
+          </div>
+        )}
+
+        <button type="submit" disabled={salvando} className="btn btn-primary btn-full">
+          {salvando ? 'Salvando...' : 'Salvar Encontrista'}
         </button>
       </form>
     </AdminLayout>
   )
-}
-
-const inputStyle = {
-  width: '100%', padding: '10px 12px', borderRadius: 8,
-  border: '1px solid #333', background: '#1a1a1a', color: '#e0e0e0', fontSize: 14,
-}
-const btnStyle = {
-  padding: '11px 0', borderRadius: 8, border: 'none',
-  background: '#2d6a4f', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer',
-}
-const btnSecStyle = {
-  padding: '8px 12px', borderRadius: 8, border: '1px solid #333',
-  background: 'none', color: '#aaa', fontSize: 12, cursor: 'pointer',
-}
-const grupoBtn = {
-  padding: '6px 12px', borderRadius: 6, border: '1px solid',
-  background: 'none', fontSize: 13, cursor: 'pointer', color: '#e0e0e0',
 }

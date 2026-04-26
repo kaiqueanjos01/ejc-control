@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { buscarEncontro } from '../../services/encontros'
 import { criarEncontrista } from '../../services/encontristas'
 import { buildWhatsAppUrl } from '../../utils/whatsapp'
+import './Inscricao.css'
 
 export function Inscricao() {
   const { encontroId } = useParams()
@@ -42,12 +43,12 @@ export function Inscricao() {
   }
 
   if (loading) return <Tela><p>Carregando...</p></Tela>
-  if (erro && !encontro) return <Tela><p style={{ color: '#f87171' }}>{erro}</p></Tela>
+  if (erro && !encontro) return <Tela><p className="text-danger">{erro}</p></Tela>
 
   if (sucesso) {
     return (
       <Tela>
-        <h2 style={{ color: '#52b788' }}>Enviado! ✓</h2>
+        <h2 className="text-success">Enviado! ✓</h2>
         <p>Redirecionando para o WhatsApp...</p>
       </Tela>
     )
@@ -55,50 +56,51 @@ export function Inscricao() {
 
   return (
     <Tela>
-      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>{encontro.nome}</h1>
-      <p style={{ color: '#aaa', fontSize: 14, marginBottom: 24 }}>Preencha seus dados para participar</p>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <input
-          placeholder="Seu nome completo"
-          value={nome}
-          onChange={e => setNome(e.target.value)}
-          required
-          style={inputStyle}
-        />
-        <input
-          placeholder="WhatsApp com DDD (ex: 11 99999-0000)"
-          value={telefone}
-          onChange={e => setTelefone(e.target.value)}
-          inputMode="tel"
-          required
-          style={inputStyle}
-        />
-        {erro && <p style={{ color: '#f87171', fontSize: 13 }}>{erro}</p>}
-        <button type="submit" disabled={enviando} style={btnStyle}>
-          {enviando ? 'Enviando...' : 'Quero participar →'}
-        </button>
-      </form>
-      <p style={{ fontSize: 11, color: '#555', marginTop: 16, textAlign: 'center' }}>
-        Após enviar, você receberá um contato pelo WhatsApp.
-      </p>
+      <div className="card inscricao-card">
+        <h1 className="inscricao-title">{encontro.nome}</h1>
+        <p className="inscricao-subtitle">Preencha seus dados para participar</p>
+
+        <form onSubmit={handleSubmit} className="inscricao-form">
+          <div className="form-group">
+            <input
+              className="form-input"
+              placeholder="Seu nome completo"
+              value={nome}
+              onChange={e => setNome(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <input
+              className="form-input"
+              placeholder="WhatsApp com DDD (ex: 11 99999-0000)"
+              value={telefone}
+              onChange={e => setTelefone(e.target.value)}
+              inputMode="tel"
+              required
+            />
+          </div>
+
+          {erro && <p className="form-error">{erro}</p>}
+
+          <button type="submit" disabled={enviando} className="btn btn-primary btn-full inscricao-btn">
+            {enviando ? 'Enviando...' : 'Quero participar →'}
+          </button>
+        </form>
+
+        <p className="inscricao-footer">
+          Após enviar, você receberá um contato pelo WhatsApp.
+        </p>
+      </div>
     </Tela>
   )
 }
 
 function Tela({ children }) {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div style={{ width: '100%', maxWidth: 400 }}>{children}</div>
+    <div className="inscricao-container">
+      <div className="inscricao-content">{children}</div>
     </div>
   )
-}
-
-const inputStyle = {
-  width: '100%', padding: '12px 14px', borderRadius: 8,
-  border: '1px solid #333', background: '#1a1a1a', color: '#e0e0e0', fontSize: 15,
-}
-
-const btnStyle = {
-  width: '100%', padding: '13px 0', borderRadius: 8, border: 'none',
-  background: '#2d6a4f', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer',
 }

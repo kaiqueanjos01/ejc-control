@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { buscarEncontristasPorNome, atualizarEncontrista } from '../../services/encontristas'
+import './CheckinAdmin.css'
 
 export function CheckinAdmin() {
   const { encontroId } = useEncontro()
@@ -38,70 +39,66 @@ export function CheckinAdmin() {
 
   return (
     <AdminLayout>
-      <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Check-in Manual</h2>
+      <div className="checkin-container">
+        <h5 className="checkin-header">Check-in Manual</h5>
 
-      <input
-        placeholder="Buscar encontrista pelo nome..."
-        value={busca}
-        onChange={handleBusca}
-        autoFocus
-        style={{ ...inputStyle, width: '100%', marginBottom: 16 }}
-      />
+        <input
+          className="form-input checkin-search"
+          placeholder="Buscar encontrista pelo nome..."
+          value={busca}
+          onChange={handleBusca}
+          autoFocus
+        />
 
-      {mensagem && (
-        <div style={{ background: '#1a3a2a', border: '1px solid #52b788', borderRadius: 8, padding: '10px 14px', marginBottom: 12, color: '#52b788', fontSize: 13 }}>
-          ✓ {mensagem}
-        </div>
-      )}
-
-      {buscando && <p style={{ color: '#aaa', fontSize: 13 }}>Buscando...</p>}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {resultados.map(e => {
-          const grupo = e.grupos
-          return (
-            <div key={e.id} style={rowStyle}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600 }}>{e.nome}</div>
-                <div style={{ fontSize: 12, color: '#777' }}>{e.telefone}</div>
-                {grupo && (
-                  <div style={{ fontSize: 12, color: grupo.cor, marginTop: 2 }}>● {grupo.nome}</div>
-                )}
-              </div>
-              <div>
-                {e.checkin_at ? (
-                  <span style={{ fontSize: 12, color: '#52b788', fontWeight: 600 }}>✓ Feito</span>
-                ) : (
-                  <button
-                    onClick={() => handleCheckin(e)}
-                    disabled={processando === e.id}
-                    style={btnStyle}
-                  >
-                    {processando === e.id ? '...' : 'Check-in'}
-                  </button>
-                )}
-              </div>
+        {mensagem && (
+          <div className="alert alert-success">
+            <div className="alert-icon">✓</div>
+            <div className="alert-content">
+              <p className="alert-message">{mensagem}</p>
             </div>
-          )
-        })}
-      </div>
+          </div>
+        )}
 
-      {busca.length >= 2 && !buscando && resultados.length === 0 && (
-        <p style={{ color: '#555', fontSize: 13 }}>Nenhum encontrista encontrado para "{busca}".</p>
-      )}
+        {buscando && <p className="loading-text">Buscando...</p>}
+
+        <div className="results-container">
+          {resultados.map(e => {
+            const grupo = e.grupos
+            return (
+              <div key={e.id} className="result-row">
+                <div className="result-info">
+                  <div className="result-name">{e.nome}</div>
+                  <div className="result-phone">{e.telefone}</div>
+                  {grupo && (
+                    <div className="result-group" style={{ color: grupo.cor }}>
+                      ● {grupo.nome}
+                    </div>
+                  )}
+                </div>
+                <div className="result-actions">
+                  {e.checkin_at ? (
+                    <span className="badge badge-success">
+                      ✓ Feito
+                    </span>
+                  ) : (
+                    <button
+                      className="btn btn-success btn-sm"
+                      onClick={() => handleCheckin(e)}
+                      disabled={processando === e.id}
+                    >
+                      {processando === e.id ? '...' : 'Check-in'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {busca.length >= 2 && !buscando && resultados.length === 0 && (
+          <p className="empty-state">Nenhum encontrista encontrado para "{busca}".</p>
+        )}
+      </div>
     </AdminLayout>
   )
-}
-
-const inputStyle = {
-  padding: '10px 14px', borderRadius: 8, border: '1px solid #333',
-  background: '#1a1a1a', color: '#e0e0e0', fontSize: 14,
-}
-const rowStyle = {
-  display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px',
-  borderRadius: 8, border: '1px solid #222', background: '#111',
-}
-const btnStyle = {
-  padding: '7px 14px', borderRadius: 6, border: 'none',
-  background: '#2d6a4f', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
 }

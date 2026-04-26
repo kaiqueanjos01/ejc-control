@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { buscarEncontristaPorToken, fazerCheckin } from '../../services/encontristas'
+import './Checkin.css'
 
 export function Checkin() {
   const { token } = useParams()
@@ -32,60 +33,57 @@ export function Checkin() {
 
   if (loading) {
     return (
-      <Tela>
-        <div style={{ fontSize: 48 }}>⏳</div>
-        <p>Processando check-in...</p>
-      </Tela>
+      <div className="checkin-container">
+        <div className="checkin-loading">
+          <div className="checkin-spinner" role="status" aria-label="Carregando">
+            <span className="sr-only">Processando check-in...</span>
+          </div>
+          <p className="text-muted">Processando check-in...</p>
+        </div>
+      </div>
     )
   }
 
   if (erro) {
     return (
-      <Tela>
-        <div style={{ fontSize: 48 }}>❌</div>
-        <p style={{ color: '#f87171' }}>{erro}</p>
-      </Tela>
+      <div className="checkin-container">
+        <div className="checkin-content">
+          <div className="checkin-error">
+            <div className="checkin-error-icon" aria-hidden="true">❌</div>
+            <p className="checkin-error-message" role="alert">{erro}</p>
+          </div>
+        </div>
+      </div>
     )
   }
 
   const grupo = encontrista?.grupos
-  const corGrupo = grupo?.cor ?? '#6b7280'
+  const corGrupo = grupo?.cor ?? 'var(--gray-500)'
 
   return (
-    <Tela>
-      <div style={{ fontSize: 56, marginBottom: 8 }}>{jaFeito ? '✅' : '🎉'}</div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>
-        {jaFeito ? 'Check-in já realizado' : 'Check-in confirmado!'}
-      </h1>
-      <p style={{ fontSize: 18, color: '#ccc', marginBottom: 20 }}>{encontrista?.nome}</p>
-      {grupo && (
-        <div style={{
-          background: corGrupo + '22',
-          border: `2px solid ${corGrupo}`,
-          borderRadius: 12,
-          padding: '12px 24px',
-          display: 'inline-block',
-          color: corGrupo,
-          fontWeight: 700,
-          fontSize: 16,
-        }}>
-          {grupo.nome}
-        </div>
-      )}
-      {!grupo && (
-        <p style={{ color: '#aaa', fontSize: 14 }}>Grupo ainda não atribuído</p>
-      )}
-    </Tela>
-  )
-}
-
-function Tela({ children }) {
-  return (
-    <div style={{
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center'
-    }}>
-      {children}
+    <div className="checkin-container">
+      <div className="checkin-content">
+        <div className="checkin-icon" aria-hidden="true">{jaFeito ? '✅' : '🎉'}</div>
+        <h1 className="checkin-title">
+          {jaFeito ? 'Check-in já realizado' : 'Check-in confirmado!'}
+        </h1>
+        <p className="checkin-name">{encontrista?.nome}</p>
+        {grupo && (
+          <div
+            className="checkin-group-card"
+            style={{
+              backgroundColor: corGrupo + '15',
+              borderColor: corGrupo,
+              color: corGrupo
+            }}
+          >
+            {grupo.nome}
+          </div>
+        )}
+        {!grupo && (
+          <p className="checkin-no-group">Grupo ainda não atribuído</p>
+        )}
+      </div>
     </div>
   )
 }

@@ -1,0 +1,158 @@
+/* Ficha Page - Premium Light Luxury Design */
+
+.ficha-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: linear-gradient(
+    135deg,
+    var(--cream) 0%,
+    rgba(224, 239, 254, 0.3) 100%
+  );
+}
+
+.ficha-content {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Card Styling */
+.ficha-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+  animation: slideInUp var(--transition-slow);
+}
+
+/* Typography */
+.ficha-greeting {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.01em;
+}
+
+.ficha-subtitle {
+  font-size: 0.9375rem;
+  color: var(--gray-600);
+  margin-bottom: var(--space-8);
+  line-height: 1.6;
+}
+
+/* Form Container */
+.ficha-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Success State */
+.ficha-success {
+  text-align: center;
+  padding: var(--space-4) 0;
+}
+
+.ficha-success-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--success);
+  margin-bottom: var(--space-3);
+  animation: slideInUp var(--transition-slow);
+}
+
+.ficha-success p {
+  font-size: 1rem;
+  color: var(--gray-700);
+  animation: slideInUp calc(var(--transition-slow) * 1.2);
+}
+
+/* Dynamic Form Styling */
+.dynamic-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Button Full Width */
+.btn-full {
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .ficha-container {
+    padding: var(--space-4);
+  }
+
+  .ficha-card {
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+  }
+
+  .ficha-greeting {
+    font-size: 1.5rem;
+  }
+
+  .ficha-subtitle {
+    font-size: 0.875rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .ficha-success-title {
+    font-size: 1.25rem;
+  }
+
+  .dynamic-form {
+    gap: var(--space-3);
+  }
+}
+
+/* Form Input Overrides for Luxury Theme */
+.form-input,
+.form-select {
+  border-color: var(--gray-300);
+  background: var(--white);
+  color: var(--gray-900);
+  transition: all var(--transition-base);
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 3px var(--primary-100);
+  outline: none;
+}
+
+.form-label {
+  color: var(--gray-900);
+}
+
+/* Error States */
+.form-error {
+  font-size: 0.875rem;
+  color: var(--danger);
+  padding: var(--space-3);
+  background: var(--danger-light);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--danger);
+  margin: 0;
+  animation: slideInUp var(--transition-fast);
+}
+
+/* Accessibility */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+button:disabled {
+  transition: opacity var(--transition-fast);
+}

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { buscarEncontristaPorToken, atualizarEncontrista } from '../../services/encontristas'
 import { listarCampos } from '../../services/campos'
 import { DynamicForm } from '../../components/DynamicForm'
+import './Ficha.css'
 
 export function Ficha() {
   const { token } = useParams()
@@ -46,45 +47,44 @@ export function Ficha() {
   }
 
   if (loading) return <Tela><p>Carregando...</p></Tela>
-  if (erro && !encontrista) return <Tela><p style={{ color: '#f87171' }}>{erro}</p></Tela>
+  if (erro && !encontrista) return <Tela><p className="text-danger">Erro: {erro}</p></Tela>
 
   if (salvo) {
     return (
       <Tela>
-        <h2 style={{ color: '#52b788' }}>Ficha salva! ✓</h2>
-        <p>Obrigado, {encontrista.nome}. Até o encontro!</p>
+        <div className="ficha-success">
+          <h2 className="ficha-success-title">Ficha salva! ✓</h2>
+          <p>Obrigado, {encontrista.nome}. Até o encontro!</p>
+        </div>
       </Tela>
     )
   }
 
   return (
     <Tela>
-      <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>Olá, {encontrista.nome}!</h2>
-      <p style={{ color: '#aaa', fontSize: 13, marginBottom: 24 }}>Complete sua ficha de inscrição.</p>
-      {campos.length === 0 ? (
-        <p style={{ color: '#aaa' }}>Nenhum campo adicional por enquanto.</p>
-      ) : (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <DynamicForm campos={campos} valores={valores} onChange={setValores} />
-          {erro && <p style={{ color: '#f87171', fontSize: 13 }}>{erro}</p>}
-          <button type="submit" disabled={salvando} style={btnStyle}>
-            {salvando ? 'Salvando...' : 'Salvar ficha'}
-          </button>
-        </form>
-      )}
+      <div className="card ficha-card">
+        <h2 className="ficha-greeting">Olá, {encontrista.nome}!</h2>
+        <p className="ficha-subtitle">Complete sua ficha de inscrição.</p>
+        {campos.length === 0 ? (
+          <p className="text-muted">Nenhum campo adicional por enquanto.</p>
+        ) : (
+          <form onSubmit={handleSubmit} className="ficha-form">
+            <DynamicForm campos={campos} valores={valores} onChange={setValores} />
+            {erro && <p className="form-error">{erro}</p>}
+            <button type="submit" disabled={salvando} className="btn btn-primary btn-full">
+              {salvando ? 'Salvando...' : 'Salvar ficha'}
+            </button>
+          </form>
+        )}
+      </div>
     </Tela>
   )
 }
 
 function Tela({ children }) {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div style={{ width: '100%', maxWidth: 400 }}>{children}</div>
+    <div className="ficha-container">
+      <div className="ficha-content">{children}</div>
     </div>
   )
-}
-
-const btnStyle = {
-  width: '100%', padding: '13px 0', borderRadius: 8, border: 'none',
-  background: '#2d6a4f', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer',
 }

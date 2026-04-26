@@ -7,6 +7,7 @@ import { useEncontro } from '../../hooks/useEncontro'
 import { useAdminRole } from '../../hooks/useAdminRole'
 import { buscarEncontro, atualizarEncontro } from '../../services/encontros'
 import { listarCampos, criarCampo, removerCampo, reordenarCampos } from '../../services/campos'
+import './Configuracoes.css'
 
 export function Configuracoes() {
   const { encontroId } = useEncontro()
@@ -82,48 +83,75 @@ export function Configuracoes() {
 
   return (
     <AdminLayout>
-      <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>Configurações do Encontro</h2>
+      <h2 className="config-page-title">Configurações do Encontro</h2>
 
       {/* Gerenciar Admins - Apenas para Admins */}
       {role === 'admin' && <AdminUsersManager />}
 
       {/* Dados do encontro */}
-      <section style={{ marginBottom: 28 }}>
-        <h3 style={{ fontSize: 14, color: '#aaa', marginBottom: 12, fontWeight: 600 }}>DADOS DO ENCONTRO</h3>
-        <form onSubmit={handleSalvarEncontro} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <section className="config-section">
+        <h3 className="config-section-title">DADOS DO ENCONTRO</h3>
+        <form onSubmit={handleSalvarEncontro} className="config-form">
           <Campo label="Nome">
-            <input value={encontro.nome} onChange={e => setEncontro(p => ({ ...p, nome: e.target.value }))} style={inputStyle} />
+            <input
+              value={encontro.nome}
+              onChange={e => setEncontro(p => ({ ...p, nome: e.target.value }))}
+              className="form-input"
+            />
           </Campo>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <Campo label="Data início" style={{ flex: 1 }}>
-              <input type="date" value={encontro.data_inicio ?? ''} onChange={e => setEncontro(p => ({ ...p, data_inicio: e.target.value }))} style={inputStyle} />
+          <div className="config-row-two">
+            <Campo label="Data início">
+              <input
+                type="date"
+                value={encontro.data_inicio ?? ''}
+                onChange={e => setEncontro(p => ({ ...p, data_inicio: e.target.value }))}
+                className="form-input"
+              />
             </Campo>
-            <Campo label="Data fim" style={{ flex: 1 }}>
-              <input type="date" value={encontro.data_fim ?? ''} onChange={e => setEncontro(p => ({ ...p, data_fim: e.target.value }))} style={inputStyle} />
+            <Campo label="Data fim">
+              <input
+                type="date"
+                value={encontro.data_fim ?? ''}
+                onChange={e => setEncontro(p => ({ ...p, data_fim: e.target.value }))}
+                className="form-input"
+              />
             </Campo>
           </div>
           <Campo label="Número WhatsApp (com código do país, sem espaços)">
-            <input placeholder="5511999990000" value={encontro.whatsapp_numero} onChange={e => setEncontro(p => ({ ...p, whatsapp_numero: e.target.value }))} style={inputStyle} />
+            <input
+              placeholder="5511999990000"
+              value={encontro.whatsapp_numero}
+              onChange={e => setEncontro(p => ({ ...p, whatsapp_numero: e.target.value }))}
+              className="form-input"
+            />
           </Campo>
           <Campo label="Mensagem — use {nome} e {telefone}">
-            <textarea value={encontro.whatsapp_mensagem} onChange={e => setEncontro(p => ({ ...p, whatsapp_mensagem: e.target.value }))} rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
+            <textarea
+              value={encontro.whatsapp_mensagem}
+              onChange={e => setEncontro(p => ({ ...p, whatsapp_mensagem: e.target.value }))}
+              rows={3}
+              className="form-textarea"
+            />
           </Campo>
-          {mensagem && <p style={{ color: '#52b788', fontSize: 13 }}>{mensagem}</p>}
-          <button type="submit" disabled={salvandoEncontro} style={btnStyle}>
+          {mensagem && <p className="config-success-message">{mensagem}</p>}
+          <button type="submit" disabled={salvandoEncontro} className="btn btn-primary">
             {salvandoEncontro ? 'Salvando...' : 'Salvar'}
           </button>
         </form>
       </section>
 
       {/* QR Code da pré-ficha */}
-      <section style={{ marginBottom: 28 }}>
-        <h3 style={{ fontSize: 14, color: '#aaa', marginBottom: 12, fontWeight: 600 }}>QR CODE — PRÉ-FICHA</h3>
-        <p style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>{urlPreFicha}</p>
-        <div style={{ background: '#fff', display: 'inline-block', padding: 12, borderRadius: 8 }}>
+      <section className="config-section">
+        <h3 className="config-section-title">QR CODE — PRÉ-FICHA</h3>
+        <p className="config-url-text">{urlPreFicha}</p>
+        <div className="config-qr-container">
           <QRCodeSVG value={urlPreFicha} size={160} />
         </div>
-        <div style={{ marginTop: 8 }}>
-          <button onClick={() => navigator.clipboard.writeText(urlPreFicha)} style={btnSecStyle}>
+        <div className="config-qr-actions">
+          <button
+            onClick={() => navigator.clipboard.writeText(urlPreFicha)}
+            className="btn btn-secondary"
+          >
             Copiar link
           </button>
         </div>
@@ -131,16 +159,26 @@ export function Configuracoes() {
 
       {/* Construtor de formulário */}
       <section>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <h3 style={{ fontSize: 14, color: '#aaa', fontWeight: 600 }}>CAMPOS DO FORMULÁRIO</h3>
-          <button onClick={() => setAdicionandoCampo(true)} style={btnStyle}>+ Campo</button>
+        <div className="config-section-header">
+          <h3 className="config-section-title">CAMPOS DO FORMULÁRIO</h3>
+          <button onClick={() => setAdicionandoCampo(true)} className="btn btn-primary">+ Campo</button>
         </div>
 
         {adicionandoCampo && (
-          <form onSubmit={handleAdicionarCampo} style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 8, padding: 14, marginBottom: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input placeholder="Label (ex: Data de Nascimento)" value={novoCampo.label} onChange={e => setNovoCampo(p => ({ ...p, label: e.target.value }))} required style={{ ...inputStyle, flex: 2 }} />
-              <select value={novoCampo.tipo} onChange={e => setNovoCampo(p => ({ ...p, tipo: e.target.value }))} style={{ ...inputStyle, flex: 1 }}>
+          <form onSubmit={handleAdicionarCampo} className="config-add-field-form">
+            <div className="config-field-inputs">
+              <input
+                placeholder="Label (ex: Data de Nascimento)"
+                value={novoCampo.label}
+                onChange={e => setNovoCampo(p => ({ ...p, label: e.target.value }))}
+                required
+                className="form-input config-field-label-input"
+              />
+              <select
+                value={novoCampo.tipo}
+                onChange={e => setNovoCampo(p => ({ ...p, tipo: e.target.value }))}
+                className="form-select config-field-type-select"
+              >
                 <option value="text">Texto</option>
                 <option value="date">Data</option>
                 <option value="phone">Telefone</option>
@@ -148,33 +186,69 @@ export function Configuracoes() {
                 <option value="select">Seleção</option>
               </select>
             </div>
-            <div style={{ display: 'flex', gap: 16, fontSize: 13 }}>
-              <label><input type="checkbox" checked={novoCampo.obrigatorio} onChange={e => setNovoCampo(p => ({ ...p, obrigatorio: e.target.checked }))} /> Obrigatório</label>
-              <label><input type="checkbox" checked={novoCampo.visivel_encontrista} onChange={e => setNovoCampo(p => ({ ...p, visivel_encontrista: e.target.checked }))} /> Visível ao encontrista</label>
+            <div className="config-field-checkboxes">
+              <label className="config-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={novoCampo.obrigatorio}
+                  onChange={e => setNovoCampo(p => ({ ...p, obrigatorio: e.target.checked }))}
+                />
+                Obrigatório
+              </label>
+              <label className="config-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={novoCampo.visivel_encontrista}
+                  onChange={e => setNovoCampo(p => ({ ...p, visivel_encontrista: e.target.checked }))}
+                />
+                Visível ao encontrista
+              </label>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button type="submit" style={btnStyle}>Adicionar</button>
-              <button type="button" onClick={() => setAdicionandoCampo(false)} style={btnSecStyle}>Cancelar</button>
+            <div className="config-form-actions">
+              <button type="submit" className="btn btn-primary">Adicionar</button>
+              <button type="button" onClick={() => setAdicionandoCampo(false)} className="btn btn-secondary">Cancelar</button>
             </div>
           </form>
         )}
 
         {campos.length === 0 && !adicionandoCampo && (
-          <p style={{ color: '#555', fontSize: 13 }}>Nenhum campo adicional. Clique em "+ Campo" para adicionar.</p>
+          <p className="config-empty-state">Nenhum campo adicional. Clique em "+ Campo" para adicionar.</p>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="config-fields-list">
           {campos.map((campo, i) => (
-            <div key={campo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, border: '1px solid #222', background: '#111' }}>
-              <div style={{ flex: 1 }}>
-                <span style={{ fontWeight: 500, fontSize: 13 }}>{campo.label}</span>
-                <span style={{ fontSize: 11, color: '#555', marginLeft: 8 }}>{campo.tipo}</span>
-                {campo.obrigatorio && <span style={{ fontSize: 11, color: '#f87171', marginLeft: 8 }}>*obrigatório</span>}
-                {campo.visivel_encontrista && <span style={{ fontSize: 11, color: '#52b788', marginLeft: 8 }}>encontrista</span>}
+            <div key={campo.id} className="config-field-item">
+              <div className="config-field-info">
+                <span className="config-field-label">{campo.label}</span>
+                <span className="config-field-type">{campo.tipo}</span>
+                {campo.obrigatorio && <span className="config-field-required">*obrigatório</span>}
+                {campo.visivel_encontrista && <span className="config-field-visibility">encontrista</span>}
               </div>
-              <button onClick={() => handleMoverCampo(i, -1)} disabled={i === 0} style={iconBtn}>↑</button>
-              <button onClick={() => handleMoverCampo(i, 1)} disabled={i === campos.length - 1} style={iconBtn}>↓</button>
-              <button onClick={() => handleRemoverCampo(campo.id)} style={{ ...iconBtn, color: '#f87171' }}>✕</button>
+              <div className="config-field-actions">
+                <button
+                  onClick={() => handleMoverCampo(i, -1)}
+                  disabled={i === 0}
+                  className="config-icon-btn"
+                  aria-label="Mover para cima"
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={() => handleMoverCampo(i, 1)}
+                  disabled={i === campos.length - 1}
+                  className="config-icon-btn"
+                  aria-label="Mover para baixo"
+                >
+                  ↓
+                </button>
+                <button
+                  onClick={() => handleRemoverCampo(campo.id)}
+                  className="config-icon-btn config-icon-btn--danger"
+                  aria-label="Remover campo"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -183,27 +257,12 @@ export function Configuracoes() {
   )
 }
 
-function Campo({ label, children, style }) {
+function Campo({ label, children }) {
   return (
-    <div style={style}>
-      <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 4 }}>{label}</label>
+    <div className="form-group">
+      <label className="form-label">{label}</label>
       {children}
     </div>
   )
 }
 
-const inputStyle = {
-  width: '100%', padding: '9px 12px', borderRadius: 8,
-  border: '1px solid #333', background: '#0f0f0f', color: '#e0e0e0', fontSize: 13,
-}
-const btnStyle = {
-  padding: '8px 16px', borderRadius: 8, border: 'none',
-  background: '#3a86ff', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-}
-const btnSecStyle = {
-  padding: '8px 12px', borderRadius: 8, border: '1px solid #333',
-  background: 'none', color: '#aaa', fontSize: 13, cursor: 'pointer',
-}
-const iconBtn = {
-  background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: 14, padding: '2px 6px',
-}

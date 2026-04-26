@@ -4,18 +4,18 @@ export function DynamicForm({ campos, valores, onChange }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div className="dynamic-form">
       {campos.map(campo => (
-        <div key={campo.id}>
-          <label style={{ display: 'block', fontSize: 12, color: '#aaa', marginBottom: 4 }}>
-            {campo.label}{campo.obrigatorio && ' *'}
+        <div key={campo.id} className="form-group">
+          <label className={`form-label ${campo.obrigatorio ? 'required' : ''}`}>
+            {campo.label}
           </label>
           {campo.tipo === 'select' ? (
             <select
               value={valores[campo.chave] ?? ''}
               onChange={e => handleChange(campo.chave, e.target.value)}
               required={campo.obrigatorio}
-              style={inputStyle}
+              className="form-select"
             >
               <option value="">Selecionar...</option>
               {(campo.opcoes ?? []).map(op => (
@@ -29,21 +29,11 @@ export function DynamicForm({ campos, valores, onChange }) {
               value={valores[campo.chave] ?? ''}
               onChange={e => handleChange(campo.chave, e.target.value)}
               required={campo.obrigatorio}
-              style={inputStyle}
+              className="form-input"
             />
           )}
         </div>
       ))}
     </div>
   )
-}
-
-const inputStyle = {
-  width: '100%',
-  padding: '10px 12px',
-  borderRadius: 8,
-  border: '1px solid #333',
-  background: '#1a1a1a',
-  color: '#e0e0e0',
-  fontSize: 14,
 }
