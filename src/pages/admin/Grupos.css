@@ -285,6 +285,12 @@
   .grupos-actions { width: 100%; }
   .grupos-actions > * { flex: 1; }
   .grupos-title { font-size: 1.25rem; }
-  .novo-grupo-form { flex-wrap: wrap; }
+  .novo-grupo-form {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
   .novo-grupo-form .form-input { flex: 1 1 100%; }
+  .novo-grupo-form input[type="number"] { flex: 1 1 calc(50% - var(--space-2)); min-width: 80px; }
+  .novo-grupo-form .color-picker { flex-shrink: 0; }
+  .novo-grupo-form .btn { flex: 1 1 calc(50% - var(--space-2)); }
 }

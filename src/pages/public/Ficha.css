@@ -166,3 +166,13 @@
   .ficha-success-title { font-size: 1.25rem; }
   .dynamic-form { gap: var(--space-3); }
 }
+
+@media (max-width: 400px) {
+  .ficha-container { padding: var(--space-3); }
+  .ficha-card { padding: var(--space-4); border-radius: var(--radius-lg); }
+  .ficha-greeting { font-size: 1.25rem; }
+  .ficha-progress-steps { gap: var(--space-2); }
+  .ficha-step-label { display: none; }
+  .ficha-form-nav { flex-direction: column-reverse; }
+  .ficha-form-nav .btn { width: 100%; }
+}

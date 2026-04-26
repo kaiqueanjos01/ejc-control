@@ -51,7 +51,9 @@ export function AceitarConvite() {
     try {
       await aceitarConvite(token, convite.email, nome, senha)
       setSucesso(true)
-      setTimeout(() => navigate('/admin/login'), 2500)
+      // If email confirmation is OFF, user is already signed in — go straight to admin
+      const { data: { session } } = await supabase.auth.getSession()
+      setTimeout(() => navigate(session ? '/admin' : '/admin/login'), 2000)
     } catch (err) {
       setErro(err.message)
       setLoading(false)

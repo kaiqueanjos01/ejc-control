@@ -343,11 +343,23 @@
   .kanban-board { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media (max-width: 768px) {
+  .crm-modal { padding: var(--space-4); }
+  .crm-modal-actions { flex-direction: column; }
+  .crm-modal-actions .btn { width: 100%; }
+}
+
 @media (max-width: 640px) {
   .kanban-board { grid-template-columns: 1fr; }
   .crm-header { flex-direction: column; }
-  .crm-stats { width: 100%; }
-  .stat-item { flex: 1; }
+  .crm-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+  }
+  .crm-stats .stat-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
   .crm-title { font-size: 1.25rem; }
 }
 

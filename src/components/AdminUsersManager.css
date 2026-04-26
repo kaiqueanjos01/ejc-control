@@ -215,4 +215,46 @@
   .admin-table { font-size: 0.8125rem; }
   .admin-table th, .admin-table td { padding: var(--space-2) var(--space-3); }
   .action-buttons { flex-direction: column; }
+  /* hide less important columns on small screens */
+  .admin-table th:nth-child(4),
+  .admin-table td:nth-child(4) { display: none; }
+}
+
+/* Invite link box */
+.admin-invite-link {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.admin-invite-link-label {
+  margin: 0 0 var(--space-3) 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-invite-link-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.admin-invite-link-row .form-input {
+  flex: 1;
+  font-size: 0.8125rem;
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .admin-invite-link-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-invite-link-row .btn { width: 100%; }
 }

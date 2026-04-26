@@ -86,3 +86,8 @@
   .inscricao-card { padding: var(--space-6); }
   .inscricao-title { font-size: 1.25rem; }
 }
+
+@media (max-width: 400px) {
+  .inscricao-container { padding: var(--space-3); }
+  .inscricao-card { padding: var(--space-4); border-radius: var(--radius-lg); }
+}
