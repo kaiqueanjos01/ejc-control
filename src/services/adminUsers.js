@@ -131,11 +131,13 @@ export async function listarConvites() {
 
 // Aceitar convite e criar conta
 export async function aceitarConvite(token, email, nome, senha) {
+  let authUserId = null
+
   try {
-    // Verificar se convite é válido
+    // 1. Verificar convite antes de criar auth user (evita órfãos)
     const { data: invite, error: inviteError } = await supabase
       .from('admin_invites')
-      .select('*')
+      .select('id, email, role')
       .eq('token', token)
       .is('usado_em', null)
       .gt('expira_em', new Date().toISOString())
@@ -144,39 +146,26 @@ export async function aceitarConvite(token, email, nome, senha) {
     if (inviteError || !invite) throw new Error('Convite inválido ou expirado')
     if (invite.email !== email) throw new Error('Email não corresponde ao convite')
 
-    // Criar usuário no Auth
-    const { data: authUser, error: authError } = await supabase.auth.signUp({
+    // 2. Criar usuário no Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password: senha,
     })
 
     if (authError) throw authError
-    if (!authUser.user) throw new Error('Erro ao criar usuário')
+    if (!authData.user) throw new Error('Erro ao criar usuário')
+    authUserId = authData.user.id
 
-    // Criar registro em admin_users
-    const { data: adminUser, error: adminError } = await supabase
-      .from('admin_users')
-      .insert([
-        {
-          auth_user_id: authUser.user.id,
-          email,
-          nome,
-          role: invite.role,
-          criado_por: invite.criado_por,
-        },
-      ])
-      .select()
-      .single()
+    // 3. Chamar função SECURITY DEFINER — cria admin_users e marca convite
+    const { data, error: fnError } = await supabase.rpc('aceitar_convite', {
+      p_token: token,
+      p_auth_user_id: authUserId,
+      p_email: email,
+      p_nome: nome,
+    })
 
-    if (adminError) throw adminError
-
-    // Marcar convite como usado
-    await supabase
-      .from('admin_invites')
-      .update({ usado_em: new Date().toISOString() })
-      .eq('id', invite.id)
-
-    return adminUser
+    if (fnError) throw fnError
+    return data?.[0] ?? data
   } catch (error) {
     console.error('Erro ao aceitar convite:', error)
     throw error
