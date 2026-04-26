@@ -1,23 +1,22 @@
-/* Login Page Styles */
-
+/* Login Page */
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-6);
-  background: linear-gradient(135deg, var(--gray-50) 0%, var(--primary-50) 100%);
+  background: var(--bg-page);
 }
 
 .login-card {
   width: 100%;
-  max-width: 360px;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
+  max-width: 380px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   padding: var(--space-8);
   box-shadow: var(--shadow-lg);
-  animation: slideInUp var(--transition-slow);
+  animation: slideInUp var(--transition-slow) both;
 }
 
 .login-header {
@@ -25,21 +24,32 @@
   text-align: center;
 }
 
+.login-logo {
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin: 0 auto var(--space-4);
+}
+
 .login-title {
-  font-family: 'Sora', sans-serif;
   font-size: 1.375rem;
   font-weight: 700;
-  color: var(--gray-900);
-  margin: 0 0 var(--space-2) 0;
-  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2);
+  letter-spacing: -0.02em;
 }
 
 .login-subtitle {
-  font-family: 'Lora', serif;
   font-size: 0.875rem;
-  color: var(--gray-600);
+  color: var(--text-secondary);
   margin: 0;
-  font-weight: 400;
 }
 
 .login-form {
@@ -48,55 +58,21 @@
   gap: var(--space-4);
 }
 
-.login-form .form-group {
-  margin-bottom: 0;
-}
-
-.login-form .form-input {
-  width: 100%;
-}
+.login-form .form-group { margin-bottom: 0; }
+.login-form .form-input { width: 100%; }
 
 .login-error {
   padding: var(--space-3) var(--space-4);
   background: var(--danger-light);
-  border: 1px solid var(--danger);
+  border: 1px solid var(--danger-border);
   border-radius: var(--radius-md);
   color: var(--danger);
   font-size: 0.875rem;
-  font-family: 'Lora', serif;
   text-align: center;
-  animation: slideInUp var(--transition-fast);
-}
-
-/* Responsive Design */
-@media (max-width: 640px) {
-  .login-container {
-    padding: var(--space-4);
-  }
-
-  .login-card {
-    padding: var(--space-6);
-  }
-
-  .login-title {
-    font-size: 1.25rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.8125rem;
-  }
+  animation: slideInUp var(--transition-fast) both;
 }
 
 @media (max-width: 480px) {
-  .login-card {
-    padding: var(--space-5);
-  }
-
-  .login-header {
-    margin-bottom: var(--space-6);
-  }
-
-  .login-form {
-    gap: var(--space-3);
-  }
+  .login-card { padding: var(--space-6); }
+  .login-title { font-size: 1.25rem; }
 }

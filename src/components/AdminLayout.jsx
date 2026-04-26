@@ -1,4 +1,9 @@
+import { useState, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import {
+  BarChart2, Users, CheckSquare, Settings,
+  Moon, Sun, Menu, LogOut, FileText, UsersRound
+} from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useAdminRole } from '../hooks/useAdminRole'
@@ -10,6 +15,17 @@ export function AdminLayout({ children }) {
   const { encontroId, setEncontroId } = useEncontro()
   const { session } = useAuth()
   const { adminUser } = useAdminRole()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [theme, setTheme] = useState(() => localStorage.getItem('ejc-theme') || 'light')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('ejc-theme', theme)
+  }, [theme])
+
+  function toggleTheme() {
+    setTheme(t => t === 'light' ? 'dark' : 'light')
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -21,72 +37,116 @@ export function AdminLayout({ children }) {
     navigate('/admin')
   }
 
+  function closeSidebar() {
+    setSidebarOpen(false)
+  }
+
   const navItems = [
-    { to: '/admin/crm', label: 'CRM', icon: '📊' },
-    { to: '/admin/grupos', label: 'Grupos', icon: '👥' },
-    { to: '/admin/checkin', label: 'Check-in', icon: '✓' },
-    { to: '/admin/configuracoes', label: 'Config', icon: '⚙️' },
+    { to: '/admin/crm', label: 'CRM', icon: <BarChart2 size={16} /> },
+    { to: '/admin/grupos', label: 'Grupos', icon: <Users size={16} /> },
+    { to: '/admin/checkin', label: 'Check-in', icon: <CheckSquare size={16} /> },
+    { to: '/admin/formulario', label: 'Formulário', icon: <FileText size={16} /> },
+    { to: '/admin/equipe', label: 'Equipe', icon: <UsersRound size={16} /> },
+    { to: '/admin/configuracoes', label: 'Configurações', icon: <Settings size={16} /> },
   ]
 
   const getUserInitial = () => {
-    return session?.user?.email?.charAt(0).toUpperCase() || '?'
+    return (adminUser?.nome || session?.user?.email || '?').charAt(0).toUpperCase()
+  }
+
+  const getUserEmail = () => {
+    return session?.user?.email || ''
   }
 
   return (
     <div className="admin-layout">
-      <header className="admin-header">
-        <nav className="admin-navbar">
-          <div className="admin-brand">
-            <button
-              onClick={trocarEncontro}
-              className="admin-brand-logo"
-              title="Voltar para seleção de encontros"
+      {/* Overlay */}
+      <div
+        className={`admin-sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
+        onClick={closeSidebar}
+      />
+
+      {/* Sidebar */}
+      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="admin-sidebar-brand">
+          <button
+            className="admin-sidebar-logo"
+            onClick={trocarEncontro}
+            title="Voltar para seleção de encontros"
+          >
+            EJC
+          </button>
+          <div>
+            <div className="admin-sidebar-name">EJC Control</div>
+            <div className="admin-sidebar-env">Painel Admin</div>
+          </div>
+        </div>
+
+        <nav className="admin-sidebar-nav">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => `admin-nav-link ${isActive ? 'active' : ''}`}
+              onClick={closeSidebar}
             >
-              EJC
-            </button>
-            {encontroId && (
-              <span className="admin-brand-text">Seletor</span>
-            )}
-          </div>
+              <span className="admin-nav-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
 
-          <div className="admin-nav-items">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `admin-nav-link ${isActive ? 'active' : ''}`}
-              >
-                <span>{item.icon}</span>
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </div>
-
-          <div className="admin-nav-actions">
-            {adminUser && (
-              <div className="admin-user-info">
-                <div className="admin-user-avatar" title={adminUser.role}>
-                  {getUserInitial()}
-                </div>
-                <div className="admin-user-role">
-                  {adminUser.role}
-                </div>
+        <div className="admin-sidebar-footer">
+          {(adminUser || session) && (
+            <div className="admin-user-info">
+              <div className="admin-user-avatar">{getUserInitial()}</div>
+              <div className="admin-user-details">
+                <div className="admin-user-email">{getUserEmail()}</div>
+                {adminUser?.role && (
+                  <div className="admin-user-role">{adminUser.role}</div>
+                )}
               </div>
-            )}
-            <button
-              onClick={handleLogout}
-              className="admin-logout-btn"
-              title="Fazer logout"
-            >
+            </div>
+          )}
+          <div className="admin-sidebar-actions">
+            <button onClick={toggleTheme} className="admin-theme-btn" title="Alternar tema">
+              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+              {theme === 'light' ? 'Dark' : 'Light'}
+            </button>
+            <button onClick={handleLogout} className="admin-logout-btn" title="Sair">
+              <LogOut size={14} />
               Sair
             </button>
           </div>
-        </nav>
-      </header>
+        </div>
+      </aside>
 
-      <main className="admin-main">
-        {children}
-      </main>
+      {/* Body */}
+      <div className="admin-body">
+        {/* Mobile topbar */}
+        <header className="admin-topbar">
+          <div className="admin-topbar-brand">
+            <button className="admin-topbar-logo" onClick={trocarEncontro}>EJC</button>
+            <span className="admin-topbar-name">EJC Control</span>
+          </div>
+          <div className="admin-topbar-actions">
+            <button onClick={toggleTheme} className="admin-theme-btn btn-icon" title="Alternar tema">
+              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+            <button
+              className="admin-mobile-menu-btn"
+              onClick={() => setSidebarOpen(true)}
+              title="Menu"
+            >
+              <Menu size={18} />
+            </button>
+          </div>
+        </header>
+
+        <main className="admin-main">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

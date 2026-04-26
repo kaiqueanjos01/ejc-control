@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import { UserX, Clock, FileText, CheckCircle, Check, Link, Users, UserPlus, X } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
-import { listarEncontristas } from '../../services/encontristas'
+import { listarEncontristas, criarEncontrista } from '../../services/encontristas'
 import './CRM.css'
 
 export function CRM() {
@@ -12,6 +13,10 @@ export function CRM() {
   const [encontristas, setEncontristas] = useState([])
   const [busca, setBusca] = useState('')
   const [loading, setLoading] = useState(true)
+  const [showNovoModal, setShowNovoModal] = useState(false)
+  const [novoNome, setNovoNome] = useState('')
+  const [novoTelefone, setNovoTelefone] = useState('')
+  const [salvando, setSalvando] = useState(false)
 
   useEffect(() => {
     if (!encontroId) {
@@ -37,15 +42,29 @@ export function CRM() {
   }
 
   const statusColunas = [
-    { id: 'sem_grupo', label: 'Sem Grupo', icon: '👥', color: '#8b5cf6' },
-    { id: 'sem_checkin', label: 'Sem Check-in', icon: '⏱️', color: '#ec4899' },
-    { id: 'incompleto', label: 'Ficha Incompleta', icon: '📋', color: '#f97316' },
-    { id: 'completo', label: 'Completo', icon: '✨', color: '#10b981' },
+    { id: 'sem_grupo', label: 'Sem Grupo', icon: <Users size={14} />, color: '#8b5cf6' },
+    { id: 'sem_checkin', label: 'Sem Check-in', icon: <Clock size={14} />, color: '#ec4899' },
+    { id: 'incompleto', label: 'Ficha Incompleta', icon: <FileText size={14} />, color: '#f97316' },
+    { id: 'completo', label: 'Completo', icon: <CheckCircle size={14} />, color: '#10b981' },
   ]
 
   function copiarLinkFicha(token) {
     const url = `${window.location.origin}/ficha/${token}`
     navigator.clipboard.writeText(url)
+  }
+
+  async function handleCriarEncontrista(e) {
+    e.preventDefault()
+    setSalvando(true)
+    try {
+      const novo = await criarEncontrista({ encontroId, nome: novoNome, telefone: novoTelefone })
+      setEncontristas(prev => [novo, ...prev])
+      setNovoNome('')
+      setNovoTelefone('')
+      setShowNovoModal(false)
+    } finally {
+      setSalvando(false)
+    }
   }
 
   function handleDragEnd(result) {
@@ -71,16 +90,72 @@ export function CRM() {
           <h1 className="crm-title">Pipeline de Encontristas</h1>
           <p className="crm-subtitle">Visualize o progresso de cada participante</p>
         </div>
-        <div className="crm-stats">
-          <div className="stat-item">
-            <span className="stat-label">Total</span>
-            <span className="stat-value">{encontristas.length}</span>
-          </div>
-        </div>
+        <button className="btn btn-primary" onClick={() => setShowNovoModal(true)}>
+          <UserPlus size={14} /> Novo encontrista
+        </button>
       </div>
 
+      <div className="crm-stats">
+        {[
+          { label: 'Total', value: encontristas.length, color: 'default' },
+          { label: 'Sem grupo', value: getEncontristasPorStatus('sem_grupo').length, color: 'purple' },
+          { label: 'Sem check-in', value: getEncontristasPorStatus('sem_checkin').length, color: 'pink' },
+          { label: 'Ficha incompleta', value: getEncontristasPorStatus('incompleto').length, color: 'orange' },
+          { label: 'Completos', value: getEncontristasPorStatus('completo').length, color: 'green' },
+        ].map(s => (
+          <div key={s.label} className={`stat-item stat-item--${s.color}`}>
+            <span className="stat-value">{s.value}</span>
+            <span className="stat-label">{s.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {showNovoModal && (
+        <div className="crm-modal-overlay" onClick={() => setShowNovoModal(false)}>
+          <div className="crm-modal" onClick={e => e.stopPropagation()}>
+            <div className="crm-modal-header">
+              <h3>Novo encontrista</h3>
+              <button className="crm-modal-close" onClick={() => setShowNovoModal(false)}>
+                <X size={16} />
+              </button>
+            </div>
+            <form onSubmit={handleCriarEncontrista} className="crm-modal-form">
+              <div className="form-group">
+                <label className="form-label">Nome</label>
+                <input
+                  className="form-input"
+                  placeholder="Nome completo"
+                  value={novoNome}
+                  onChange={e => setNovoNome(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Telefone</label>
+                <input
+                  className="form-input"
+                  placeholder="(11) 99999-9999"
+                  value={novoTelefone}
+                  onChange={e => setNovoTelefone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="crm-modal-actions">
+                <button type="submit" className="btn btn-primary" disabled={salvando}>
+                  {salvando ? 'Salvando...' : 'Criar'}
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowNovoModal(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="crm-search">
-        <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
@@ -141,9 +216,15 @@ export function CRM() {
                                 <div className="card-body">
                                   <p className="card-phone">{encontrista.telefone}</p>
                                   <div className="card-status">
-                                    {encontrista.checkin_at && <span className="status-badge checkin">✓ Check-in</span>}
+                                    {encontrista.checkin_at && (
+                                      <span className="status-badge checkin">
+                                        <Check size={10} /> Check-in
+                                      </span>
+                                    )}
                                     {Object.keys(encontrista.dados_extras ?? {}).length > 0 && (
-                                      <span className="status-badge ficha">📋 Ficha</span>
+                                      <span className="status-badge ficha">
+                                        <FileText size={10} /> Ficha
+                                      </span>
                                     )}
                                   </div>
                                 </div>
@@ -156,7 +237,7 @@ export function CRM() {
                                     }}
                                     title="Copiar link"
                                   >
-                                    📎 Copiar
+                                    <Link size={11} /> Copiar link
                                   </button>
                                 </div>
                               </div>

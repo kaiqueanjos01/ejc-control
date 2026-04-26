@@ -1,0 +1,168 @@
+/* Formulario Page */
+
+.formulario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border);
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.formulario-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1);
+  letter-spacing: -0.03em;
+}
+
+.formulario-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Nova seção inline form */
+.formulario-nova-secao-form {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.formulario-nova-secao-form .form-input {
+  flex: 1;
+}
+
+/* Empty state */
+.formulario-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-16) var(--space-6);
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.formulario-empty p { margin: 0; }
+
+/* Sections */
+.formulario-secoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.formulario-secao {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.formulario-secao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--primary-light);
+  border-bottom: 1px solid var(--primary-border);
+}
+
+.formulario-secao-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.formulario-secao-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--primary-text);
+  letter-spacing: -0.01em;
+}
+
+.formulario-secao-count {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  opacity: 0.65;
+  background: var(--primary-border);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-full);
+}
+
+.formulario-secao-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.formulario-secao-empty {
+  padding: var(--space-4) var(--space-4);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0;
+  text-align: center;
+}
+
+/* Inline add-field form */
+.formulario-campo-inline {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: var(--bg-muted);
+}
+
+.formulario-campo-inline-row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Add campo button at section footer */
+.formulario-add-campo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: none;
+  border: none;
+  border-top: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.formulario-add-campo-btn:hover {
+  background: var(--bg-hover);
+  color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .formulario-header { flex-direction: column; align-items: stretch; }
+  .formulario-header .btn { width: 100%; }
+  .formulario-nova-secao-form { flex-wrap: wrap; }
+  .formulario-nova-secao-form .form-input { width: 100%; }
+  .formulario-campo-inline-row { flex-direction: column; }
+}

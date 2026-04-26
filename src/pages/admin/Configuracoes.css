@@ -1,38 +1,40 @@
-/* Configuracoes Page Styles - Premium Light Luxury Design */
+/* Configuracoes Page */
 
-/* Page Title */
 .config-page-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--gray-900);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
   margin-bottom: var(--space-8);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
-/* Section Styling */
 .config-section {
-  margin-bottom: var(--space-8);
-  animation: slideInUp var(--transition-slow);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  animation: slideInUp var(--transition-slow) both;
 }
 
 .config-section-title {
-  font-size: 0.875rem;
-  color: var(--gray-500);
-  margin-bottom: var(--space-3);
-  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .config-section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
   gap: var(--space-4);
 }
 
-/* Form Styling */
 .config-form {
   display: flex;
   flex-direction: column;
@@ -56,32 +58,32 @@
   min-width: 120px;
 }
 
-/* Success Message */
 .config-success-message {
   font-size: 0.875rem;
   color: var(--success);
   padding: var(--space-2) var(--space-3);
   background: var(--success-light);
+  border: 1px solid var(--success-border);
   border-radius: var(--radius-md);
   margin: 0;
 }
 
-/* QR Code Section */
+/* QR Code */
 .config-url-text {
-  font-size: 0.875rem;
-  color: var(--gray-600);
-  margin-bottom: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-3);
   word-break: break-all;
-  margin: 0 0 var(--space-3) 0;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .config-qr-container {
-  background: var(--white);
+  background: var(--bg-card);
   display: inline-block;
   padding: var(--space-4);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--border);
   margin-bottom: var(--space-3);
 }
 
@@ -92,29 +94,21 @@
 
 /* Add Field Form */
 .config-add-field-form {
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   margin-bottom: var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  animation: slideInUp var(--transition-base);
+  animation: slideInUp var(--transition-base) both;
 }
 
 .config-field-inputs {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: var(--space-3);
-}
-
-.config-field-label-input {
-  flex: 2;
-}
-
-.config-field-type-select {
-  flex: 1;
 }
 
 .config-field-checkboxes {
@@ -128,7 +122,7 @@
   align-items: center;
   gap: var(--space-2);
   cursor: pointer;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   font-weight: 500;
   user-select: none;
 }
@@ -137,12 +131,11 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: var(--primary-600);
+  accent-color: var(--primary);
 }
 
-/* Empty State */
 .config-empty-state {
-  color: var(--gray-500);
+  color: var(--text-muted);
   font-size: 0.875rem;
   padding: var(--space-3);
   margin: 0;
@@ -152,7 +145,7 @@
 .config-fields-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .config-field-item {
@@ -162,183 +155,121 @@
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  border: 1px solid var(--gray-200);
-  background: var(--white);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: var(--shadow-xs);
   transition: all var(--transition-base);
 }
 
 .config-field-item:hover {
   box-shadow: var(--shadow-sm);
-  border-color: var(--primary-300);
+  border-color: var(--primary-border);
 }
 
-/* Field Info */
 .config-field-info {
   display: flex;
   align-items: center;
   flex: 1;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .config-field-label {
   font-weight: 600;
   font-size: 0.9375rem;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 .config-field-type {
-  font-size: 0.75rem;
-  color: var(--gray-500);
-  background: var(--gray-100);
-  padding: var(--space-1) var(--space-2);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  background: var(--bg-muted);
+  padding: 2px var(--space-2);
   border-radius: var(--radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
+  border: 1px solid var(--border);
 }
 
 .config-field-required {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--danger);
   background: var(--danger-light);
-  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--danger-border);
+  padding: 2px var(--space-2);
   border-radius: var(--radius-sm);
   font-weight: 600;
 }
 
 .config-field-visibility {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--success);
   background: var(--success-light);
-  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--success-border);
+  padding: 2px var(--space-2);
   border-radius: var(--radius-sm);
   font-weight: 600;
 }
 
-/* Field Actions */
 .config-field-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   flex-shrink: 0;
 }
 
 .config-icon-btn {
   background: transparent;
-  border: 1px solid var(--gray-300);
-  color: var(--gray-600);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 0.875rem;
-  padding: var(--space-2) var(--space-2);
+  padding: 0;
   border-radius: var(--radius-sm);
   transition: all var(--transition-base);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
+  font-family: inherit;
 }
 
 .config-icon-btn:hover:not(:disabled) {
-  background: var(--primary-50);
-  border-color: var(--primary-300);
-  color: var(--primary-600);
+  background: var(--bg-hover);
+  border-color: var(--primary-border);
+  color: var(--primary);
 }
 
 .config-icon-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
 .config-icon-btn--danger {
   color: var(--danger);
-  border-color: var(--danger-light);
+  border-color: var(--danger-border);
 }
 
 .config-icon-btn--danger:hover:not(:disabled) {
   background: var(--danger-light);
   border-color: var(--danger);
+  color: var(--danger);
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-  .config-page-title {
-    font-size: 1.5rem;
-    margin-bottom: var(--space-6);
-  }
-
-  .config-section-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .config-section-header .btn {
-    width: 100%;
-  }
-
-  .config-row-two {
-    grid-template-columns: 1fr;
-  }
-
-  .config-field-inputs {
-    grid-template-columns: 1fr;
-  }
-
-  .config-field-checkboxes {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .config-field-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .config-field-info {
-    width: 100%;
-  }
-
-  .config-field-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .config-form-actions {
-    flex-direction: column;
-  }
-
-  .config-form-actions .btn {
-    flex: none;
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .config-page-title {
-    font-size: 1.25rem;
-  }
-
-  .config-section {
-    margin-bottom: var(--space-6);
-  }
-
-  .config-field-info {
-    gap: var(--space-2);
-  }
-
-  .config-field-label {
-    font-size: 0.875rem;
-  }
-
-  .config-field-actions {
-    gap: var(--space-1);
-  }
-
-  .config-icon-btn {
-    min-width: 28px;
-    height: 28px;
-    font-size: 0.75rem;
-  }
+  .config-page-title { font-size: 1.25rem; margin-bottom: var(--space-6); }
+  .config-section { padding: var(--space-4); }
+  .config-section-header { flex-direction: column; align-items: stretch; }
+  .config-section-header .btn { width: 100%; }
+  .config-row-two { grid-template-columns: 1fr; }
+  .config-field-inputs { grid-template-columns: 1fr; }
+  .config-field-checkboxes { flex-direction: column; gap: var(--space-3); }
+  .config-field-item { flex-direction: column; align-items: flex-start; }
+  .config-field-info { width: 100%; }
+  .config-field-actions { width: 100%; justify-content: flex-start; }
+  .config-form-actions { flex-direction: column; }
+  .config-form-actions .btn { flex: none; width: 100%; }
 }

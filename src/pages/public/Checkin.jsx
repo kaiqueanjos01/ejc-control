@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { CheckCircle2, PartyPopper, XCircle } from 'lucide-react'
 import { buscarEncontristaPorToken, fazerCheckin } from '../../services/encontristas'
 import './Checkin.css'
 
@@ -49,7 +50,7 @@ export function Checkin() {
       <div className="checkin-container">
         <div className="checkin-content">
           <div className="checkin-error">
-            <div className="checkin-error-icon" aria-hidden="true">❌</div>
+            <div className="checkin-error-icon" aria-hidden="true"><XCircle size={64} strokeWidth={1.5} /></div>
             <p className="checkin-error-message" role="alert">{erro}</p>
           </div>
         </div>
@@ -63,7 +64,12 @@ export function Checkin() {
   return (
     <div className="checkin-container">
       <div className="checkin-content">
-        <div className="checkin-icon" aria-hidden="true">{jaFeito ? '✅' : '🎉'}</div>
+        <div className="checkin-icon" aria-hidden="true">
+          {jaFeito
+            ? <CheckCircle2 size={72} strokeWidth={1.5} />
+            : <PartyPopper size={72} strokeWidth={1.5} />
+          }
+        </div>
         <h1 className="checkin-title">
           {jaFeito ? 'Check-in já realizado' : 'Check-in confirmado!'}
         </h1>

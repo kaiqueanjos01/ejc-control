@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { X } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { listarEncontros, criarEncontro } from '../../services/encontros'
 import { useEncontro } from '../../hooks/useEncontro'
@@ -91,7 +92,7 @@ export function SeletorEncontro() {
               onClick={() => setCriando(false)}
               className="btn btn-secondary btn-sm seletor-encontro__btn-cancel"
             >
-              ✕
+              <X size={14} />
             </button>
           </form>
         ) : (

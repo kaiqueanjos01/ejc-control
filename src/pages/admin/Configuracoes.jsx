@@ -2,29 +2,22 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import { AdminLayout } from '../../components/AdminLayout'
-import AdminUsersManager from '../../components/AdminUsersManager'
 import { useEncontro } from '../../hooks/useEncontro'
-import { useAdminRole } from '../../hooks/useAdminRole'
 import { buscarEncontro, atualizarEncontro } from '../../services/encontros'
-import { listarCampos, criarCampo, removerCampo, reordenarCampos } from '../../services/campos'
 import './Configuracoes.css'
 
 export function Configuracoes() {
   const { encontroId } = useEncontro()
-  const { role } = useAdminRole()
   const navigate = useNavigate()
   const [encontro, setEncontro] = useState(null)
-  const [campos, setCampos] = useState([])
   const [loading, setLoading] = useState(true)
   const [salvandoEncontro, setSalvandoEncontro] = useState(false)
   const [mensagem, setMensagem] = useState(null)
-  const [novoCampo, setNovoCampo] = useState({ label: '', chave: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true, visivel_equipe: true })
-  const [adicionandoCampo, setAdicionandoCampo] = useState(false)
 
   useEffect(() => {
     if (!encontroId) { navigate('/admin'); return }
-    Promise.all([buscarEncontro(encontroId), listarCampos(encontroId)])
-      .then(([e, c]) => { setEncontro(e); setCampos(c) })
+    buscarEncontro(encontroId)
+      .then(setEncontro)
       .finally(() => setLoading(false))
   }, [encontroId, navigate])
 
@@ -43,40 +36,6 @@ export function Configuracoes() {
     setSalvandoEncontro(false)
   }
 
-  async function handleAdicionarCampo(e) {
-    e.preventDefault()
-    const chave = novoCampo.chave || novoCampo.label.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
-    const campo = await criarCampo({
-      encontro_id: encontroId,
-      label: novoCampo.label,
-      chave,
-      tipo: novoCampo.tipo,
-      obrigatorio: novoCampo.obrigatorio,
-      visivel_encontrista: novoCampo.visivel_encontrista,
-      visivel_equipe: novoCampo.visivel_equipe,
-      ordem: campos.length,
-    })
-    setCampos(prev => [...prev, campo])
-    setNovoCampo({ label: '', chave: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true, visivel_equipe: true })
-    setAdicionandoCampo(false)
-  }
-
-  async function handleRemoverCampo(id) {
-    if (!confirm('Remover este campo? Os dados já preenchidos em dados_extras não serão apagados.')) return
-    await removerCampo(id)
-    setCampos(prev => prev.filter(c => c.id !== id))
-  }
-
-  async function handleMoverCampo(index, direcao) {
-    const novo = [...campos]
-    const alvo = index + direcao
-    if (alvo < 0 || alvo >= novo.length) return
-    ;[novo[index], novo[alvo]] = [novo[alvo], novo[index]]
-    const comOrdem = novo.map((c, i) => ({ ...c, ordem: i }))
-    setCampos(comOrdem)
-    await reordenarCampos(comOrdem.map(c => ({ id: c.id, ordem: c.ordem })))
-  }
-
   const urlPreFicha = `${window.location.origin}/inscricao/${encontroId}`
 
   if (loading) return <AdminLayout><p>Carregando...</p></AdminLayout>
@@ -84,9 +43,6 @@ export function Configuracoes() {
   return (
     <AdminLayout>
       <h2 className="config-page-title">Configurações do Encontro</h2>
-
-      {/* Gerenciar Admins - Apenas para Admins */}
-      {role === 'admin' && <AdminUsersManager />}
 
       {/* Dados do encontro */}
       <section className="config-section">
@@ -156,103 +112,6 @@ export function Configuracoes() {
           </button>
         </div>
       </section>
-
-      {/* Construtor de formulário */}
-      <section>
-        <div className="config-section-header">
-          <h3 className="config-section-title">CAMPOS DO FORMULÁRIO</h3>
-          <button onClick={() => setAdicionandoCampo(true)} className="btn btn-primary">+ Campo</button>
-        </div>
-
-        {adicionandoCampo && (
-          <form onSubmit={handleAdicionarCampo} className="config-add-field-form">
-            <div className="config-field-inputs">
-              <input
-                placeholder="Label (ex: Data de Nascimento)"
-                value={novoCampo.label}
-                onChange={e => setNovoCampo(p => ({ ...p, label: e.target.value }))}
-                required
-                className="form-input config-field-label-input"
-              />
-              <select
-                value={novoCampo.tipo}
-                onChange={e => setNovoCampo(p => ({ ...p, tipo: e.target.value }))}
-                className="form-select config-field-type-select"
-              >
-                <option value="text">Texto</option>
-                <option value="date">Data</option>
-                <option value="phone">Telefone</option>
-                <option value="number">Número</option>
-                <option value="select">Seleção</option>
-              </select>
-            </div>
-            <div className="config-field-checkboxes">
-              <label className="config-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={novoCampo.obrigatorio}
-                  onChange={e => setNovoCampo(p => ({ ...p, obrigatorio: e.target.checked }))}
-                />
-                Obrigatório
-              </label>
-              <label className="config-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={novoCampo.visivel_encontrista}
-                  onChange={e => setNovoCampo(p => ({ ...p, visivel_encontrista: e.target.checked }))}
-                />
-                Visível ao encontrista
-              </label>
-            </div>
-            <div className="config-form-actions">
-              <button type="submit" className="btn btn-primary">Adicionar</button>
-              <button type="button" onClick={() => setAdicionandoCampo(false)} className="btn btn-secondary">Cancelar</button>
-            </div>
-          </form>
-        )}
-
-        {campos.length === 0 && !adicionandoCampo && (
-          <p className="config-empty-state">Nenhum campo adicional. Clique em "+ Campo" para adicionar.</p>
-        )}
-
-        <div className="config-fields-list">
-          {campos.map((campo, i) => (
-            <div key={campo.id} className="config-field-item">
-              <div className="config-field-info">
-                <span className="config-field-label">{campo.label}</span>
-                <span className="config-field-type">{campo.tipo}</span>
-                {campo.obrigatorio && <span className="config-field-required">*obrigatório</span>}
-                {campo.visivel_encontrista && <span className="config-field-visibility">encontrista</span>}
-              </div>
-              <div className="config-field-actions">
-                <button
-                  onClick={() => handleMoverCampo(i, -1)}
-                  disabled={i === 0}
-                  className="config-icon-btn"
-                  aria-label="Mover para cima"
-                >
-                  ↑
-                </button>
-                <button
-                  onClick={() => handleMoverCampo(i, 1)}
-                  disabled={i === campos.length - 1}
-                  className="config-icon-btn"
-                  aria-label="Mover para baixo"
-                >
-                  ↓
-                </button>
-                <button
-                  onClick={() => handleRemoverCampo(campo.id)}
-                  className="config-icon-btn config-icon-btn--danger"
-                  aria-label="Remover campo"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </AdminLayout>
   )
 }
@@ -265,4 +124,3 @@ function Campo({ label, children }) {
     </div>
   )
 }
-

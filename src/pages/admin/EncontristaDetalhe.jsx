@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { ChevronLeft, Check } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { buscarEncontristaPorId, atualizarEncontrista } from '../../services/encontristas'
@@ -66,7 +67,7 @@ export function EncontristaDetalhe() {
   return (
     <AdminLayout>
       <button onClick={() => navigate('/admin/crm')} className="btn-back">
-        ← Voltar ao CRM
+        <ChevronLeft size={16} /> Voltar ao CRM
       </button>
 
       <div className="encontrista-header">
@@ -75,7 +76,7 @@ export function EncontristaDetalhe() {
           <p className="header-phone">{encontrista.telefone}</p>
           {encontrista.checkin_at && (
             <div className="badge badge-success">
-              <span>✓ Check-in: {new Date(encontrista.checkin_at).toLocaleString('pt-BR')}</span>
+              <Check size={11} /> Check-in: {new Date(encontrista.checkin_at).toLocaleString('pt-BR')}
             </div>
           )}
         </div>

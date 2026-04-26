@@ -22,6 +22,8 @@ export default function AdminUsersManager() {
   const [novoEmail, setNovoEmail] = useState('')
   const [novoRole, setNovoRole] = useState('moderador')
   const [deletandoId, setDeletandoId] = useState(null)
+  const [linkGerado, setLinkGerado] = useState(null)
+  const [linkCopiado, setLinkCopiado] = useState(false)
 
   // Carregar dados
   useEffect(() => {
@@ -53,7 +55,9 @@ export default function AdminUsersManager() {
         setError('Email é obrigatório')
         return
       }
-      await criarConviteAdmin(novoEmail, novoRole)
+      const convite = await criarConviteAdmin(novoEmail, novoRole)
+      const link = `${window.location.origin}/admin/convite/${convite.token}`
+      setLinkGerado(link)
       setNovoEmail('')
       setNovoRole('moderador')
       setShowNovoConvite(false)
@@ -61,6 +65,12 @@ export default function AdminUsersManager() {
     } catch (err) {
       setError(err.message)
     }
+  }
+
+  function copiarLink(link) {
+    navigator.clipboard.writeText(link)
+    setLinkCopiado(true)
+    setTimeout(() => setLinkCopiado(false), 2000)
   }
 
   async function handleDeletarConvite(conviteId) {
@@ -91,11 +101,21 @@ export default function AdminUsersManager() {
     }
   }
 
-  // Verificar se usuário tem permissão
+  if (loading) {
+    return (
+      <div className="admin-users-container">
+        <p className="text-muted">Carregando...</p>
+      </div>
+    )
+  }
+
   if (!usuarioAtual) {
     return (
       <div className="admin-users-container">
-        <div className="admin-restricted">Você não tem acesso a esta seção</div>
+        <h2>Equipe</h2>
+        <div className="admin-restricted">
+          Seu usuário ainda não está cadastrado na tabela de admins. Peça a um admin para adicioná-lo, ou execute a migration inicial para criar seu registro.
+        </div>
       </div>
     )
   }
@@ -104,9 +124,24 @@ export default function AdminUsersManager() {
 
   return (
     <div className="admin-users-container">
-      <h2>Gerenciar Admins</h2>
+      <h2>Equipe</h2>
 
       {error && <div className="admin-error">{error}</div>}
+
+      {linkGerado && (
+        <div className="admin-invite-link">
+          <p className="admin-invite-link-label">Convite gerado! Copie o link e envie para a pessoa:</p>
+          <div className="admin-invite-link-row">
+            <input readOnly value={linkGerado} className="form-input" />
+            <button className="btn btn-primary" onClick={() => copiarLink(linkGerado)}>
+              {linkCopiado ? 'Copiado!' : 'Copiar'}
+            </button>
+          </div>
+          <button className="btn btn-secondary" style={{ marginTop: '8px' }} onClick={() => setLinkGerado(null)}>
+            Fechar
+          </button>
+        </div>
+      )}
 
       <div className="admin-info">
         <p>
@@ -157,6 +192,7 @@ export default function AdminUsersManager() {
                   <th>Email</th>
                   <th>Role</th>
                   <th>Expira em</th>
+                  <th>Link</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -168,6 +204,14 @@ export default function AdminUsersManager() {
                       <span className={`badge badge-${convite.role}`}>{convite.role}</span>
                     </td>
                     <td>{new Date(convite.expira_em).toLocaleDateString('pt-BR')}</td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-secondary"
+                        onClick={() => copiarLink(`${window.location.origin}/admin/convite/${convite.token}`)}
+                      >
+                        Copiar link
+                      </button>
+                    </td>
                     <td>
                       <button
                         className="btn btn-sm btn-danger"

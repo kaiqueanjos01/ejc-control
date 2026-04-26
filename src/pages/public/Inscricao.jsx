@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { CheckCircle2 } from 'lucide-react'
 import { buscarEncontro } from '../../services/encontros'
 import { criarEncontrista } from '../../services/encontristas'
 import { buildWhatsAppUrl } from '../../utils/whatsapp'
@@ -48,7 +49,7 @@ export function Inscricao() {
   if (sucesso) {
     return (
       <Tela>
-        <h2 className="text-success">Enviado! ✓</h2>
+        <h2 className="text-success"><CheckCircle2 size={32} /> Enviado!</h2>
         <p>Redirecionando para o WhatsApp...</p>
       </Tela>
     )

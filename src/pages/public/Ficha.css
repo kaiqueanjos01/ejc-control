@@ -1,4 +1,4 @@
-/* Ficha Page - Premium Light Luxury Design */
+/* Ficha (Public) */
 
 .ficha-container {
   min-height: 100vh;
@@ -6,11 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-6);
-  background: linear-gradient(
-    135deg,
-    var(--cream) 0%,
-    rgba(224, 239, 254, 0.3) 100%
-  );
+  background: var(--bg-page);
 }
 
 .ficha-content {
@@ -18,141 +14,155 @@
   max-width: 500px;
 }
 
-/* Card Styling */
 .ficha-card {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   padding: var(--space-8);
   box-shadow: var(--shadow-lg);
-  animation: slideInUp var(--transition-slow);
+  animation: slideInUp var(--transition-slow) both;
 }
 
-/* Typography */
 .ficha-greeting {
-  font-family: 'Sora', sans-serif;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--gray-900);
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--text-primary);
   margin-bottom: var(--space-2);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
 }
 
 .ficha-subtitle {
   font-size: 0.9375rem;
-  color: var(--gray-600);
-  margin-bottom: var(--space-8);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
   line-height: 1.6;
 }
 
-/* Form Container */
 .ficha-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 
-/* Success State */
+/* Multi-step progress */
+.ficha-progress {
+  margin-bottom: var(--space-6);
+}
+
+.ficha-progress-steps {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ficha-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  opacity: 0.4;
+  transition: opacity var(--transition-base);
+}
+
+.ficha-step.active { opacity: 1; }
+.ficha-step.done { opacity: 0.7; }
+
+.ficha-step-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all var(--transition-base);
+}
+
+.ficha-step.active .ficha-step-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.ficha-step.done .ficha-step-dot {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.ficha-step-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.ficha-step.active .ficha-step-label { color: var(--text-primary); }
+
+.ficha-progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.ficha-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.ficha-secao-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: -0.02em;
+}
+
+.ficha-form-nav {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
 .ficha-success {
   text-align: center;
   padding: var(--space-4) 0;
 }
 
 .ficha-success-title {
-  font-family: 'Sora', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.375rem;
+  font-weight: 800;
   color: var(--success);
   margin-bottom: var(--space-3);
-  animation: slideInUp var(--transition-slow);
+  animation: slideInUp var(--transition-slow) both;
 }
 
 .ficha-success p {
   font-size: 1rem;
-  color: var(--gray-700);
-  animation: slideInUp calc(var(--transition-slow) * 1.2);
+  color: var(--text-secondary);
 }
 
-/* Dynamic Form Styling */
 .dynamic-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
 
-/* Button Full Width */
-.btn-full {
-  width: 100%;
-}
-
-/* Responsive Design */
 @media (max-width: 640px) {
-  .ficha-container {
-    padding: var(--space-4);
-  }
-
-  .ficha-card {
-    padding: var(--space-6);
-    border-radius: var(--radius-md);
-  }
-
-  .ficha-greeting {
-    font-size: 1.5rem;
-  }
-
-  .ficha-subtitle {
-    font-size: 0.875rem;
-    margin-bottom: var(--space-6);
-  }
-
-  .ficha-success-title {
-    font-size: 1.25rem;
-  }
-
-  .dynamic-form {
-    gap: var(--space-3);
-  }
-}
-
-/* Form Input Overrides for Luxury Theme */
-.form-input,
-.form-select {
-  border-color: var(--gray-300);
-  background: var(--white);
-  color: var(--gray-900);
-  transition: all var(--transition-base);
-}
-
-.form-input:focus,
-.form-select:focus {
-  border-color: var(--primary-600);
-  box-shadow: 0 0 0 3px var(--primary-100);
-  outline: none;
-}
-
-.form-label {
-  color: var(--gray-900);
-}
-
-/* Error States */
-.form-error {
-  font-size: 0.875rem;
-  color: var(--danger);
-  padding: var(--space-3);
-  background: var(--danger-light);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--danger);
-  margin: 0;
-  animation: slideInUp var(--transition-fast);
-}
-
-/* Accessibility */
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Loading State */
-button:disabled {
-  transition: opacity var(--transition-fast);
+  .ficha-container { padding: var(--space-4); }
+  .ficha-card { padding: var(--space-6); }
+  .ficha-greeting { font-size: 1.375rem; }
+  .ficha-subtitle { font-size: 0.875rem; margin-bottom: var(--space-5); }
+  .ficha-success-title { font-size: 1.25rem; }
+  .dynamic-form { gap: var(--space-3); }
 }

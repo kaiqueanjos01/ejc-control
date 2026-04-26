@@ -27,6 +27,7 @@ export function Login() {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
+          <div className="login-logo">EJC</div>
           <h1 className="login-title">EJC Control</h1>
           <p className="login-subtitle">Acesso da equipe</p>
         </div>

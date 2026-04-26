@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import { Wand2, X, Check, FileText } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas } from '../../services/encontristas'
@@ -13,7 +14,7 @@ export function Grupos() {
   const [encontristas, setEncontristas] = useState([])
   const [grupos, setGrupos] = useState([])
   const [loading, setLoading] = useState(true)
-  const [novoGrupo, setNovoGrupo] = useState({ nome: '', cor: '#6366f1' })
+  const [novoGrupo, setNovoGrupo] = useState({ nome: '', cor: '#6366f1', idadeMin: '', idadeMax: '' })
   const [criandoGrupo, setCriandoGrupo] = useState(false)
   const [sugestoesPendentes, setSugestoesPendentes] = useState(false)
 
@@ -64,10 +65,12 @@ export function Grupos() {
       encontroId,
       nome: novoGrupo.nome,
       cor: novoGrupo.cor,
+      criterioIdadeMin: novoGrupo.idadeMin !== '' ? Number(novoGrupo.idadeMin) : null,
+      criterioIdadeMax: novoGrupo.idadeMax !== '' ? Number(novoGrupo.idadeMax) : null,
       ordem: grupos.length,
     })
     setGrupos((prev) => [...prev, novo])
-    setNovoGrupo({ nome: '', cor: '#6366f1' })
+    setNovoGrupo({ nome: '', cor: '#6366f1', idadeMin: '', idadeMax: '' })
     setCriandoGrupo(false)
   }
 
@@ -91,7 +94,7 @@ export function Grupos() {
 
   const colunas = [
     { id: 'sem_grupo', nome: 'Sem Grupo', cor: '#9ca3af', isDummy: true },
-    ...grupos.map((g) => ({ id: g.id, nome: g.nome, cor: g.cor, isDummy: false })),
+    ...grupos.map((g) => ({ id: g.id, nome: g.nome, cor: g.cor, isDummy: false, idadeMin: g.criterio_idade_min, idadeMax: g.criterio_idade_max })),
   ]
 
   return (
@@ -102,10 +105,10 @@ export function Grupos() {
           <p className="grupos-subtitle">Arraste encontristas para reorganizar os grupos</p>
         </div>
         <div className="grupos-actions">
-          <button className="btn-secondary" onClick={handleSugerir} disabled={sugestoesPendentes}>
-            ✨ {sugestoesPendentes ? 'Processando...' : 'Sugerir por Idade'}
+          <button className="btn btn-secondary" onClick={handleSugerir} disabled={sugestoesPendentes}>
+            <Wand2 size={14} /> {sugestoesPendentes ? 'Processando...' : 'Sugerir por Idade'}
           </button>
-          <button className="btn-primary" onClick={() => setCriandoGrupo(true)}>
+          <button className="btn btn-primary" onClick={() => setCriandoGrupo(true)}>
             + Novo Grupo
           </button>
         </div>
@@ -127,10 +130,30 @@ export function Grupos() {
             onChange={(e) => setNovoGrupo((p) => ({ ...p, cor: e.target.value }))}
             className="color-picker"
           />
-          <button type="submit" className="btn-primary">
+          <input
+            type="number"
+            placeholder="Idade mín."
+            value={novoGrupo.idadeMin}
+            onChange={(e) => setNovoGrupo((p) => ({ ...p, idadeMin: e.target.value }))}
+            min="0"
+            max="99"
+            className="form-input"
+            style={{ width: '90px' }}
+          />
+          <input
+            type="number"
+            placeholder="Idade máx."
+            value={novoGrupo.idadeMax}
+            onChange={(e) => setNovoGrupo((p) => ({ ...p, idadeMax: e.target.value }))}
+            min="0"
+            max="99"
+            className="form-input"
+            style={{ width: '90px' }}
+          />
+          <button type="submit" className="btn btn-primary">
             Criar
           </button>
-          <button type="button" onClick={() => setCriandoGrupo(false)} className="btn-secondary">
+          <button type="button" onClick={() => setCriandoGrupo(false)} className="btn btn-secondary">
             Cancelar
           </button>
         </form>
@@ -143,14 +166,25 @@ export function Grupos() {
             return (
               <div key={col.id} className="kanban-column-wrapper">
                 <div className="column-header-premium" style={{ '--header-color': col.cor }}>
-                  <div className="header-content">
-                    <h3 className="column-name">{col.nome}</h3>
-                    <span className="column-badge">{items.length}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="header-content">
+                      <h3 className="column-name">{col.nome}</h3>
+                      <span className="column-badge">{items.length}</span>
+                    </div>
+                    {!col.isDummy && (
+                      <button className="btn-remove" onClick={() => handleRemoverGrupo(col.id)} title="Remover grupo">
+                        <X size={14} />
+                      </button>
+                    )}
                   </div>
-                  {!col.isDummy && (
-                    <button className="btn-remove" onClick={() => handleRemoverGrupo(col.id)} title="Remover grupo">
-                      ✕
-                    </button>
+                  {(col.idadeMin != null || col.idadeMax != null) && (
+                    <span className="column-age-range">
+                      {col.idadeMin != null && col.idadeMax != null
+                        ? `${col.idadeMin}–${col.idadeMax} anos`
+                        : col.idadeMin != null
+                        ? `${col.idadeMin}+ anos`
+                        : `até ${col.idadeMax} anos`}
+                    </span>
                   )}
                 </div>
 
@@ -180,9 +214,11 @@ export function Grupos() {
                                   <h4 className="participant-name">{e.nome}</h4>
                                   <p className="participant-phone">{e.telefone}</p>
                                   <div className="participant-meta">
-                                    {e.checkin_at && <span className="meta-badge checkin">✓ Check-in</span>}
+                                    {e.checkin_at && (
+                                      <span className="meta-badge checkin"><Check size={10} /> Check-in</span>
+                                    )}
                                     {Object.keys(e.dados_extras ?? {}).length > 0 && (
-                                      <span className="meta-badge ficha">📋 Ficha</span>
+                                      <span className="meta-badge ficha"><FileText size={10} /> Ficha</span>
                                     )}
                                   </div>
                                 </div>

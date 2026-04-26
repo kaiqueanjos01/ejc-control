@@ -1,11 +1,11 @@
-/* SeletorEncontro Premium Design */
+/* SeletorEncontro Page */
 
 .seletor-encontro {
   min-height: 100vh;
   padding: var(--space-6);
   max-width: 480px;
   margin: 0 auto;
-  background: var(--cream);
+  background: var(--bg-page);
 }
 
 .seletor-encontro__header {
@@ -16,37 +16,32 @@
 }
 
 .seletor-encontro__title {
-  font-family: 'Sora', sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--gray-900);
+  font-weight: 800;
+  color: var(--text-primary);
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
 }
 
 .seletor-encontro__logout {
   background: none;
-  border: none;
-  color: var(--gray-500);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 0.8125rem;
   font-weight: 500;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .seletor-encontro__logout:hover {
-  color: var(--primary-600);
-  background: var(--primary-50);
+  color: var(--danger);
+  border-color: var(--danger-border);
+  background: var(--danger-light);
 }
 
-.seletor-encontro__logout:focus-visible {
-  outline: 2px solid var(--primary-600);
-  outline-offset: 2px;
-}
-
-/* Encontros List */
 .seletor-encontro__list {
   display: flex;
   flex-direction: column;
@@ -58,48 +53,43 @@
   width: 100%;
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--gray-200);
-  background: var(--white);
-  color: var(--gray-900);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
   text-align: left;
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .seletor-encontro__card:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--primary-300);
+  border-color: var(--primary-border);
   transform: translateY(-2px);
 }
 
-.seletor-encontro__card:focus-visible {
-  outline: 2px solid var(--primary-600);
-  outline-offset: 2px;
-}
-
 .seletor-encontro__card-title {
-  font-weight: 600;
-  font-family: 'Sora', sans-serif;
+  font-weight: 700;
   margin: 0;
-  color: var(--gray-900);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
 }
 
 .seletor-encontro__card-date {
-  font-size: 0.875rem;
-  color: var(--gray-500);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
   margin-top: var(--space-1);
 }
 
-/* Loading State */
 .seletor-encontro__loading {
   text-align: center;
   padding: var(--space-8) var(--space-4);
-  color: var(--gray-600);
+  color: var(--text-muted);
   font-style: italic;
+  font-size: 0.875rem;
 }
 
-/* Form Section */
 .seletor-encontro__form-section {
   margin-top: var(--space-8);
 }
@@ -118,45 +108,13 @@
   width: 100%;
 }
 
-.seletor-encontro__btn-submit {
-  flex-shrink: 0;
-  padding: var(--space-3) var(--space-5);
-}
+.seletor-encontro__btn-new { width: 100%; }
 
-.seletor-encontro__btn-cancel {
-  flex-shrink: 0;
-  padding: var(--space-3) var(--space-4);
-}
-
-.seletor-encontro__btn-new {
-  width: 100%;
-}
-
-/* Responsive */
 @media (max-width: 640px) {
-  .seletor-encontro {
-    padding: var(--space-4);
-  }
-
-  .seletor-encontro__title {
-    font-size: 1.25rem;
-  }
-
-  .seletor-encontro__form {
-    flex-wrap: wrap;
-  }
-
-  .seletor-encontro__form-input {
-    flex-basis: 100%;
-  }
-
-  .seletor-encontro__btn-submit {
-    flex-basis: 1;
-    flex: 1;
-  }
-
-  .seletor-encontro__btn-cancel {
-    flex-basis: 1;
-    flex: 1;
-  }
+  .seletor-encontro { padding: var(--space-4); }
+  .seletor-encontro__title { font-size: 1.25rem; }
+  .seletor-encontro__form { flex-wrap: wrap; }
+  .seletor-encontro__form-input { flex-basis: 100%; }
+  .seletor-encontro__btn-submit,
+  .seletor-encontro__btn-cancel { flex: 1; }
 }

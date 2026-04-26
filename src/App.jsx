@@ -10,6 +10,9 @@ import { EncontristaDetalhe } from './pages/admin/EncontristaDetalhe'
 import { Grupos } from './pages/admin/Grupos'
 import { CheckinAdmin } from './pages/admin/CheckinAdmin'
 import { Configuracoes } from './pages/admin/Configuracoes'
+import { Formulario } from './pages/admin/Formulario'
+import { Equipe } from './pages/admin/Equipe'
+import { AceitarConvite } from './pages/admin/AceitarConvite'
 
 export default function App() {
   return (
@@ -22,11 +25,14 @@ export default function App() {
 
         {/* Admin */}
         <Route path="/admin/login" element={<Login />} />
+        <Route path="/admin/convite/:token" element={<AceitarConvite />} />
         <Route path="/admin" element={<ProtectedRoute><SeletorEncontro /></ProtectedRoute>} />
         <Route path="/admin/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
         <Route path="/admin/crm/:id" element={<ProtectedRoute><EncontristaDetalhe /></ProtectedRoute>} />
         <Route path="/admin/grupos" element={<ProtectedRoute><Grupos /></ProtectedRoute>} />
         <Route path="/admin/checkin" element={<ProtectedRoute><CheckinAdmin /></ProtectedRoute>} />
+        <Route path="/admin/formulario" element={<ProtectedRoute><Formulario /></ProtectedRoute>} />
+        <Route path="/admin/equipe" element={<ProtectedRoute><Equipe /></ProtectedRoute>} />
         <Route path="/admin/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/admin" replace />} />
