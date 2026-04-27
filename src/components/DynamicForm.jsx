@@ -3,7 +3,8 @@ import { applyMask, stripMask, MASKED_TYPES } from '../utils/masks'
 export function DynamicForm({ campos, valores, onChange }) {
   function handleChange(chave, eventValue, tipo) {
     let stored = eventValue
-    if (MASKED_TYPES.includes(tipo)) {
+    // currency uses type="number" — preserve decimal, don't strip
+    if (MASKED_TYPES.includes(tipo) && tipo !== 'currency') {
       stored = stripMask(eventValue)
     }
     onChange({ ...valores, [chave]: stored })
