@@ -111,7 +111,7 @@ describe('applyMask - currency', () => {
     expect(applyMask('0', 'currency')).toBe('R$ 0,00')
   })
   it('is idempotent on already-masked value', () => {
-    expect(applyMask('120050', 'currency')).toBe('R$ 1.200,50')
+    expect(applyMask('R$ 1.200,50', 'currency')).toBe('R$ 1.200,50')
   })
 })
 
