@@ -1,10 +1,9 @@
-import { applyMask, stripMask, MASKED_TYPES } from '../utils/masks'
+import { applyMask, stripMask, TEXT_MASKED_TYPES } from '../utils/masks'
 
 export function DynamicForm({ campos, valores, onChange }) {
   function handleChange(chave, eventValue, tipo) {
     let stored = eventValue
-    // currency uses type="number" — preserve decimal, don't strip
-    if (MASKED_TYPES.includes(tipo) && tipo !== 'currency') {
+    if (TEXT_MASKED_TYPES.includes(tipo)) {
       stored = stripMask(eventValue)
     }
     onChange({ ...valores, [chave]: stored })
@@ -48,6 +47,7 @@ export function DynamicForm({ campos, valores, onChange }) {
                 type="checkbox"
                 checked={!!valores[campo.chave]}
                 onChange={e => handleChange(campo.chave, e.target.checked, campo.tipo)}
+                required={campo.obrigatorio}
               />
               {campo.label}
             </label>
@@ -64,7 +64,7 @@ export function DynamicForm({ campos, valores, onChange }) {
               placeholder="0,00"
             />
 
-          ) : MASKED_TYPES.includes(campo.tipo) ? (
+          ) : TEXT_MASKED_TYPES.includes(campo.tipo) ? (
             <input
               type="text"
               inputMode={campo.tipo === 'phone' ? 'tel' : 'numeric'}

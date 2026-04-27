@@ -1,5 +1,8 @@
 export const MASKED_TYPES = ['phone', 'cpf', 'cnpj', 'cep', 'rg', 'currency']
 
+/** Types that use text-input masking (strips non-digits on change). Excludes 'currency' which uses type="number". */
+export const TEXT_MASKED_TYPES = MASKED_TYPES.filter(t => t !== 'currency')
+
 /**
  * Remove all non-digit characters from a value.
  * Returns '' for falsy input.
