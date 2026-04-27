@@ -245,7 +245,7 @@ export function Formulario() {
                           onChange={e => {
                             const tipo = e.target.value
                             setNovoCampo(p => ({ ...p, tipo, opcoes: tipo === 'select' ? p.opcoes : [] }))
-                            if (e.target.value !== 'select') setNovaOpcao('')
+                            if (tipo !== 'select') setNovaOpcao('')
                           }}
                           className="form-select"
                         >
@@ -268,8 +268,8 @@ export function Formulario() {
                     {novoCampo.tipo === 'select' && (
                       <div className="formulario-opcoes">
                         <label className="form-label">Opções *</label>
-                        {novoCampo.opcoes.map((op, i) => (
-                          <div key={i} className="formulario-opcao-item">
+                        {novoCampo.opcoes.map((op) => (
+                          <div key={op} className="formulario-opcao-item">
                             <span>{op}</span>
                             <button
                               type="button"
