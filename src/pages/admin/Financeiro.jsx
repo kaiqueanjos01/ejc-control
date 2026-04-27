@@ -18,6 +18,7 @@ import {
   calcularInventario,
 } from '../../services/financeiro'
 import { FinanceiroConfig } from '../../components/FinanceiroConfig'
+import { applyMask, stripMask } from '../../utils/masks'
 import './Financeiro.css'
 
 function formatBRL(valor) {
@@ -108,7 +109,7 @@ export function Financeiro() {
       }
       if (!itemId) { setError('Selecione um item'); return }
       if (!fdQtd || !fdValor) { setError('Quantidade e valor são obrigatórios'); return }
-      await criarDespesa(encontroId, itemId, parseFloat(fdQtd), parseFloat(fdValor), fdData, fdObs)
+      await criarDespesa(encontroId, itemId, parseFloat(fdQtd), parseInt(fdValor || '0') / 100, fdData, fdObs)
       resetFormDespesa()
       await carregar()
     } catch (e) {
@@ -133,7 +134,7 @@ export function Financeiro() {
       if (doTipo === 'dinheiro' && !doValor) { setError('Valor é obrigatório'); return }
       if (doTipo === 'item' && (!doItemId || !doQtd)) { setError('Item e quantidade são obrigatórios'); return }
       await criarDoacao(encontroId, doTipo, {
-        valor: doTipo === 'dinheiro' ? parseFloat(doValor) : null,
+        valor: doTipo === 'dinheiro' ? parseInt(doValor || '0') / 100 : null,
         itemId: doTipo === 'item' ? doItemId : null,
         quantidade: doTipo === 'item' ? parseFloat(doQtd) : null,
         doador: doDoador || null,
@@ -471,7 +472,7 @@ function AbaDespesas({
             </div>
             <div className="form-group">
               <label>Valor unitário (R$) *</label>
-              <input className="form-input" type="number" min="0" step="0.01" value={fdValor} onChange={e => setFdValor(e.target.value)} placeholder="0,00" />
+              <input className="form-input" type="text" inputMode="numeric" value={applyMask(fdValor, 'currency')} onChange={e => setFdValor(stripMask(e.target.value))} placeholder="R$ 0,00" />
             </div>
             <div className="form-group">
               <label>Data *</label>
@@ -576,7 +577,7 @@ function AbaDoacoes({
             {doTipo === 'dinheiro' && (
               <div className="form-group">
                 <label>Valor (R$) *</label>
-                <input className="form-input" type="number" min="0" step="0.01" value={doValor} onChange={e => setDoValor(e.target.value)} placeholder="0,00" />
+                <input className="form-input" type="text" inputMode="numeric" value={applyMask(doValor, 'currency')} onChange={e => setDoValor(stripMask(e.target.value))} placeholder="R$ 0,00" />
               </div>
             )}
 
