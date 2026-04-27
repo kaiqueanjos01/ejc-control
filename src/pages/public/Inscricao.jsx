@@ -4,13 +4,14 @@ import { CheckCircle2 } from 'lucide-react'
 import { buscarEncontro } from '../../services/encontros'
 import { criarEncontrista } from '../../services/encontristas'
 import { buildWhatsAppUrl } from '../../utils/whatsapp'
+import { useMaskInput } from '../../hooks/useMaskInput'
 import './Inscricao.css'
 
 export function Inscricao() {
   const { encontroId } = useParams()
   const [encontro, setEncontro] = useState(null)
   const [nome, setNome] = useState('')
-  const [telefone, setTelefone] = useState('')
+  const { inputValue: telDisplay, handleChange: handleTelChange, rawValue: telefone } = useMaskInput('phone')
   const [loading, setLoading] = useState(true)
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState(null)
@@ -76,8 +77,8 @@ export function Inscricao() {
             <input
               className="form-input"
               placeholder="WhatsApp com DDD (ex: 11 99999-0000)"
-              value={telefone}
-              onChange={e => setTelefone(e.target.value)}
+              value={telDisplay}
+              onChange={handleTelChange}
               inputMode="tel"
               required
             />
