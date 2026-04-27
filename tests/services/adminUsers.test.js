@@ -88,23 +88,20 @@ describe('verificarPermissao', () => {
   })
 })
 
-describe('canViewFinanceiro e canEditFinanceiro', () => {
-  it('admin pode ver e editar financeiro', () => {
+describe('canViewFinanceiro', () => {
+  it('admin pode ver financeiro', () => {
     expect(ROLE_PERMISSIONS.admin.canViewFinanceiro).toBe(true)
-    expect(ROLE_PERMISSIONS.admin.canEditFinanceiro).toBe(true)
   })
 
   it('nenhum outro role pode ver financeiro', () => {
     const outrosRoles = ['moderador', 'visualizador', 'equipe_externa', 'bem_estar', 'supers']
     outrosRoles.forEach(role => {
       expect(ROLE_PERMISSIONS[role].canViewFinanceiro).toBe(false)
-      expect(ROLE_PERMISSIONS[role].canEditFinanceiro).toBe(false)
     })
   })
 
   it('verificarPermissao admin retorna true para financeiro', () => {
     expect(verificarPermissao({ role: 'admin', is_coord: false }, 'canViewFinanceiro')).toBe(true)
-    expect(verificarPermissao({ role: 'admin', is_coord: false }, 'canEditFinanceiro')).toBe(true)
   })
 
   it('verificarPermissao moderador retorna false para financeiro', () => {

@@ -101,6 +101,7 @@ export function Financeiro() {
           setError('Nome e categoria do item são obrigatórios')
           return
         }
+        if (!fdQtd || !fdValor) { setError('Quantidade e valor são obrigatórios'); return }
         const novoItem = await criarItem(encontroId, fdNovoItemCategoria, fdNovoItemNome.trim(), fdNovoItemUnidade)
         itemId = novoItem.id
       }

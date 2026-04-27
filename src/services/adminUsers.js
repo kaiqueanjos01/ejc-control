@@ -13,7 +13,7 @@ export const ROLE_PERMISSIONS = {
     canViewCheckin: true, canEditCheckin: true,
     canViewFormulario: true,
     canViewEquipe: true,
-    canViewFinanceiro: true, canEditFinanceiro: true,
+    canViewFinanceiro: true,
   },
   moderador: {
     canViewUsers: true, canCreateUsers: false, canEditUsers: false, canDeleteUsers: false,
@@ -23,7 +23,7 @@ export const ROLE_PERMISSIONS = {
     canViewCheckin: true, canEditCheckin: false,
     canViewFormulario: false,
     canViewEquipe: false,
-    canViewFinanceiro: false, canEditFinanceiro: false,
+    canViewFinanceiro: false,
   },
   visualizador: {
     canViewUsers: false, canCreateUsers: false, canEditUsers: false, canDeleteUsers: false,
@@ -33,7 +33,7 @@ export const ROLE_PERMISSIONS = {
     canViewCheckin: true, canEditCheckin: false,
     canViewFormulario: false,
     canViewEquipe: false,
-    canViewFinanceiro: false, canEditFinanceiro: false,
+    canViewFinanceiro: false,
   },
   equipe_externa: {
     canViewUsers: false, canCreateUsers: false, canEditUsers: false, canDeleteUsers: false,
@@ -43,7 +43,7 @@ export const ROLE_PERMISSIONS = {
     canViewCheckin: true, canEditCheckin: false,
     canViewFormulario: false,
     canViewEquipe: true,
-    canViewFinanceiro: false, canEditFinanceiro: false,
+    canViewFinanceiro: false,
   },
   bem_estar: {
     canViewUsers: false, canCreateUsers: false, canEditUsers: false, canDeleteUsers: false,
@@ -53,7 +53,7 @@ export const ROLE_PERMISSIONS = {
     canViewCheckin: true, canEditCheckin: true,
     canViewFormulario: false,
     canViewEquipe: true,
-    canViewFinanceiro: false, canEditFinanceiro: false,
+    canViewFinanceiro: false,
   },
   supers: {
     canViewUsers: false, canCreateUsers: false, canEditUsers: false, canDeleteUsers: false,
@@ -63,7 +63,7 @@ export const ROLE_PERMISSIONS = {
     canViewCheckin: true, canEditCheckin: false,
     canViewFormulario: false,
     canViewEquipe: true,
-    canViewFinanceiro: false, canEditFinanceiro: false,
+    canViewFinanceiro: false,
   },
 }
 
