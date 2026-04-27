@@ -58,7 +58,7 @@ export function applyMask(value, type) {
       const num = parseInt(digits, 10) || 0
       const reais = Math.floor(num / 100)
       const centavos = String(num % 100).padStart(2, '0')
-      const reaisStr = reais.toLocaleString('pt-BR')
+      const reaisStr = reais.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
       return `R$ ${reaisStr},${centavos}`
     }
     default:

@@ -69,6 +69,9 @@ describe('applyMask - cnpj', () => {
     expect(applyMask('12345678', 'cnpj')).toBe('12.345.678')
     expect(applyMask('123456780001', 'cnpj')).toBe('12.345.678/0001')
   })
+  it('is idempotent on already-masked value', () => {
+    expect(applyMask('12.345.678/0001-90', 'cnpj')).toBe('12.345.678/0001-90')
+  })
 })
 
 describe('applyMask - cep', () => {
@@ -79,6 +82,9 @@ describe('applyMask - cep', () => {
     expect(applyMask('01310', 'cep')).toBe('01310')
     expect(applyMask('013101', 'cep')).toBe('01310-1')
   })
+  it('is idempotent on already-masked value', () => {
+    expect(applyMask('01310-100', 'cep')).toBe('01310-100')
+  })
 })
 
 describe('applyMask - rg', () => {
@@ -88,6 +94,9 @@ describe('applyMask - rg', () => {
   it('formats partially', () => {
     expect(applyMask('12', 'rg')).toBe('12')
     expect(applyMask('123', 'rg')).toBe('12.3')
+  })
+  it('is idempotent on already-masked value', () => {
+    expect(applyMask('12.345.678-9', 'rg')).toBe('12.345.678-9')
   })
 })
 
@@ -100,6 +109,9 @@ describe('applyMask - currency', () => {
   it('returns empty string for empty input', () => {
     expect(applyMask('', 'currency')).toBe('')
     expect(applyMask('0', 'currency')).toBe('R$ 0,00')
+  })
+  it('is idempotent on already-masked value', () => {
+    expect(applyMask('120050', 'currency')).toBe('R$ 1.200,50')
   })
 })
 
