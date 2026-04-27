@@ -166,3 +166,30 @@
   .formulario-nova-secao-form .form-input { width: 100%; }
   .formulario-campo-inline-row { flex-direction: column; }
 }
+
+/* Select field options builder */
+.formulario-opcoes {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.formulario-opcao-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.formulario-opcao-item span {
+  flex: 1;
+}
+
+.formulario-opcao-add {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}

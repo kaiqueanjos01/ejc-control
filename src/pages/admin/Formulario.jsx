@@ -6,14 +6,32 @@ import { useEncontro } from '../../hooks/useEncontro'
 import { listarCampos, criarCampo, removerCampo, reordenarCampos } from '../../services/campos'
 import './Formulario.css'
 
+const TIPO_LABELS = {
+  text: 'Texto',
+  textarea: 'Texto longo',
+  number: 'Número',
+  phone: 'Telefone',
+  cpf: 'CPF',
+  cnpj: 'CNPJ',
+  cep: 'CEP',
+  rg: 'RG',
+  date: 'Data',
+  currency: 'Valor (R$)',
+  select: 'Seleção',
+  checkbox: 'Sim / Não',
+}
+
 export function Formulario() {
   const { encontroId } = useEncontro()
   const navigate = useNavigate()
   const [campos, setCampos] = useState([])
-  const [secoes, setSecoes] = useState([]) // array de nomes de seção, em ordem
+  const [secoes, setSecoes] = useState([])
   const [loading, setLoading] = useState(true)
-  const [adicionandoEmSecao, setAdicionandoEmSecao] = useState(null) // nome da seção ativa
-  const [novoCampo, setNovoCampo] = useState({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true })
+  const [adicionandoEmSecao, setAdicionandoEmSecao] = useState(null)
+  const [novoCampo, setNovoCampo] = useState({
+    label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true, opcoes: [],
+  })
+  const [novaOpcao, setNovaOpcao] = useState('')
   const [novaSecaoNome, setNovaSecaoNome] = useState('')
   const [criandoSecao, setCriandoSecao] = useState(false)
 
@@ -21,7 +39,6 @@ export function Formulario() {
     if (!encontroId) { navigate('/admin'); return }
     listarCampos(encontroId).then(data => {
       setCampos(data)
-      // Derivar ordem das seções a partir dos campos
       const ordemVista = []
       for (const c of data) {
         const s = c.secao || 'Geral'
@@ -37,6 +54,17 @@ export function Formulario() {
 
   function indexGlobal(campo) {
     return campos.findIndex(c => c.id === campo.id)
+  }
+
+  function adicionarOpcao() {
+    const op = novaOpcao.trim()
+    if (!op || novoCampo.opcoes.includes(op)) return
+    setNovoCampo(p => ({ ...p, opcoes: [...p.opcoes, op] }))
+    setNovaOpcao('')
+  }
+
+  function removerOpcao(index) {
+    setNovoCampo(p => ({ ...p, opcoes: p.opcoes.filter((_, i) => i !== index) }))
   }
 
   async function handleAdicionarSecao(e) {
@@ -61,12 +89,17 @@ export function Formulario() {
 
   async function handleAdicionarCampo(e) {
     e.preventDefault()
+    if (novoCampo.tipo === 'select' && novoCampo.opcoes.length === 0) {
+      alert('Adicione ao menos uma opção para o campo de seleção.')
+      return
+    }
     const chave = novoCampo.label.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
     const campo = await criarCampo({
       encontro_id: encontroId,
       label: novoCampo.label,
       chave,
       tipo: novoCampo.tipo,
+      opcoes: novoCampo.tipo === 'select' ? novoCampo.opcoes : null,
       obrigatorio: novoCampo.obrigatorio,
       visivel_encontrista: novoCampo.visivel_encontrista,
       visivel_equipe: true,
@@ -74,7 +107,8 @@ export function Formulario() {
       ordem: campos.length,
     })
     setCampos(prev => [...prev, campo])
-    setNovoCampo({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true })
+    setNovoCampo({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true, opcoes: [] })
+    setNovaOpcao('')
     setAdicionandoEmSecao(null)
   }
 
@@ -92,6 +126,12 @@ export function Formulario() {
     const comOrdem = novo.map((c, i) => ({ ...c, ordem: i }))
     setCampos(comOrdem)
     await reordenarCampos(comOrdem.map(c => ({ id: c.id, ordem: c.ordem })))
+  }
+
+  function cancelarForm() {
+    setAdicionandoEmSecao(null)
+    setNovoCampo({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true, opcoes: [] })
+    setNovaOpcao('')
   }
 
   if (loading) return <AdminLayout><p>Carregando...</p></AdminLayout>
@@ -112,7 +152,6 @@ export function Formulario() {
         </button>
       </div>
 
-      {/* Form: nova seção */}
       {criandoSecao && (
         <form onSubmit={handleAdicionarSecao} className="formulario-nova-secao-form">
           <input
@@ -141,7 +180,6 @@ export function Formulario() {
           const aberta = adicionandoEmSecao === secao
           return (
             <div key={secao} className="formulario-secao">
-              {/* Header da seção */}
               <div className="formulario-secao-header">
                 <div className="formulario-secao-header-left">
                   <span className="formulario-secao-title">{secao}</span>
@@ -156,7 +194,6 @@ export function Formulario() {
                 </button>
               </div>
 
-              {/* Campos da seção */}
               <div className="formulario-secao-body">
                 {camposSecao.length === 0 && !aberta && (
                   <p className="formulario-secao-empty">Nenhum campo. Adicione um abaixo.</p>
@@ -168,7 +205,7 @@ export function Formulario() {
                     <div key={campo.id} className="config-field-item">
                       <div className="config-field-info">
                         <span className="config-field-label">{campo.label}</span>
-                        <span className="config-field-type">{campo.tipo}</span>
+                        <span className="config-field-type">{TIPO_LABELS[campo.tipo] ?? campo.tipo}</span>
                         {campo.obrigatorio && <span className="config-field-required">*obrigatório</span>}
                         {campo.visivel_encontrista && <span className="config-field-visibility">encontrista</span>}
                       </div>
@@ -187,7 +224,6 @@ export function Formulario() {
                   )
                 })}
 
-                {/* Form inline de novo campo */}
                 {aberta && (
                   <form onSubmit={handleAdicionarCampo} className="formulario-campo-inline">
                     <div className="formulario-campo-inline-row">
@@ -206,17 +242,59 @@ export function Formulario() {
                         <label className="form-label">Tipo</label>
                         <select
                           value={novoCampo.tipo}
-                          onChange={e => setNovoCampo(p => ({ ...p, tipo: e.target.value }))}
+                          onChange={e => {
+                            const tipo = e.target.value
+                            setNovoCampo(p => ({ ...p, tipo, opcoes: tipo === 'select' ? p.opcoes : [] }))
+                            if (e.target.value !== 'select') setNovaOpcao('')
+                          }}
                           className="form-select"
                         >
                           <option value="text">Texto</option>
-                          <option value="date">Data</option>
-                          <option value="phone">Telefone</option>
+                          <option value="textarea">Texto longo</option>
                           <option value="number">Número</option>
+                          <option value="phone">Telefone</option>
+                          <option value="cpf">CPF</option>
+                          <option value="cnpj">CNPJ</option>
+                          <option value="cep">CEP</option>
+                          <option value="rg">RG</option>
+                          <option value="date">Data</option>
+                          <option value="currency">Valor (R$)</option>
                           <option value="select">Seleção</option>
+                          <option value="checkbox">Sim / Não</option>
                         </select>
                       </div>
                     </div>
+
+                    {novoCampo.tipo === 'select' && (
+                      <div className="formulario-opcoes">
+                        <label className="form-label">Opções *</label>
+                        {novoCampo.opcoes.map((op, i) => (
+                          <div key={i} className="formulario-opcao-item">
+                            <span>{op}</span>
+                            <button
+                              type="button"
+                              className="config-icon-btn config-icon-btn--danger"
+                              onClick={() => removerOpcao(i)}
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ))}
+                        <div className="formulario-opcao-add">
+                          <input
+                            className="form-input"
+                            placeholder="Nova opção..."
+                            value={novaOpcao}
+                            onChange={e => setNovaOpcao(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); adicionarOpcao() } }}
+                          />
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={adicionarOpcao}>
+                            Adicionar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="config-field-checkboxes">
                       <label className="config-checkbox-label">
                         <input
@@ -237,16 +315,15 @@ export function Formulario() {
                     </div>
                     <div className="config-form-actions">
                       <button type="submit" className="btn btn-primary">Adicionar campo</button>
-                      <button type="button" className="btn btn-secondary" onClick={() => { setAdicionandoEmSecao(null); setNovoCampo({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true }) }}>Cancelar</button>
+                      <button type="button" className="btn btn-secondary" onClick={cancelarForm}>Cancelar</button>
                     </div>
                   </form>
                 )}
 
-                {/* Botão + campo no rodapé da seção */}
                 {!aberta && (
                   <button
                     className="formulario-add-campo-btn"
-                    onClick={() => { setAdicionandoEmSecao(secao); setNovoCampo({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true }) }}
+                    onClick={() => { setAdicionandoEmSecao(secao); setNovoCampo({ label: '', tipo: 'text', obrigatorio: false, visivel_encontrista: true, opcoes: [] }) }}
                   >
                     <Plus size={13} /> Adicionar campo
                   </button>
