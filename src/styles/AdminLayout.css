@@ -313,7 +313,7 @@
   max-width: 1320px;
   width: 100%;
   margin: 0 auto;
-  animation: slideInUp var(--transition-slow) both;
+  animation: fadeIn var(--transition-slow) both;
 }
 
 /* ============================================================
