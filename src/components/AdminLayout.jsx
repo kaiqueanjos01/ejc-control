@@ -2,17 +2,18 @@ import { useState, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   BarChart2, Users, CheckSquare, Settings,
-  Moon, Sun, Menu, LogOut, FileText, UsersRound
+  Moon, Sun, Menu, LogOut, FileText, UsersRound, DollarSign
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useAdminRole } from '../hooks/useAdminRole'
 import { useEncontro } from '../hooks/useEncontro'
+import { verificarPermissao, ROLE_LABELS } from '../services/adminUsers'
 import '../styles/AdminLayout.css'
 
 export function AdminLayout({ children }) {
   const navigate = useNavigate()
-  const { encontroId, setEncontroId } = useEncontro()
+  const { setEncontroId } = useEncontro()
   const { session } = useAuth()
   const { adminUser } = useAdminRole()
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -41,14 +42,19 @@ export function AdminLayout({ children }) {
     setSidebarOpen(false)
   }
 
-  const navItems = [
-    { to: '/admin/crm', label: 'CRM', icon: <BarChart2 size={16} /> },
-    { to: '/admin/grupos', label: 'Grupos', icon: <Users size={16} /> },
-    { to: '/admin/checkin', label: 'Check-in', icon: <CheckSquare size={16} /> },
-    { to: '/admin/formulario', label: 'Formulário', icon: <FileText size={16} /> },
-    { to: '/admin/equipe', label: 'Equipe', icon: <UsersRound size={16} /> },
-    { to: '/admin/configuracoes', label: 'Configurações', icon: <Settings size={16} /> },
+  const allNavItems = [
+    { to: '/admin/crm', label: 'CRM', icon: <BarChart2 size={16} />, permission: 'canViewCRM' },
+    { to: '/admin/grupos', label: 'Grupos', icon: <Users size={16} />, permission: 'canViewGrupos' },
+    { to: '/admin/checkin', label: 'Check-in', icon: <CheckSquare size={16} />, permission: 'canViewCheckin' },
+    { to: '/admin/formulario', label: 'Formulário', icon: <FileText size={16} />, permission: 'canViewFormulario' },
+    { to: '/admin/equipe', label: 'Equipe', icon: <UsersRound size={16} />, permission: 'canViewEquipe' },
+    { to: '/admin/financeiro', label: 'Financeiro', icon: <DollarSign size={16} />, permission: 'canViewFinanceiro' },
+    { to: '/admin/configuracoes', label: 'Configurações', icon: <Settings size={16} />, permission: 'canViewFormulario' },
   ]
+
+  const navItems = adminUser
+    ? allNavItems.filter((item) => verificarPermissao(adminUser, item.permission))
+    : []
 
   const getUserInitial = () => {
     return (adminUser?.nome || session?.user?.email || '?').charAt(0).toUpperCase()
@@ -103,7 +109,12 @@ export function AdminLayout({ children }) {
               <div className="admin-user-details">
                 <div className="admin-user-email">{getUserEmail()}</div>
                 {adminUser?.role && (
-                  <div className="admin-user-role">{adminUser.role}</div>
+                  <div className="admin-user-role">
+                    {ROLE_LABELS[adminUser.role] ?? adminUser.role}
+                    {adminUser.is_coord && (
+                      <span style={{ marginLeft: 6, fontSize: '0.7rem', opacity: 0.75 }}>· Coord</span>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

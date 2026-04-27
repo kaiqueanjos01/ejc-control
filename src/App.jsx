@@ -13,6 +13,7 @@ import { Configuracoes } from './pages/admin/Configuracoes'
 import { Formulario } from './pages/admin/Formulario'
 import { Equipe } from './pages/admin/Equipe'
 import { AceitarConvite } from './pages/admin/AceitarConvite'
+import { Financeiro } from './pages/admin/Financeiro'
 
 export default function App() {
   return (
@@ -27,13 +28,14 @@ export default function App() {
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/convite/:token" element={<AceitarConvite />} />
         <Route path="/admin" element={<ProtectedRoute><SeletorEncontro /></ProtectedRoute>} />
-        <Route path="/admin/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
-        <Route path="/admin/crm/:id" element={<ProtectedRoute><EncontristaDetalhe /></ProtectedRoute>} />
-        <Route path="/admin/grupos" element={<ProtectedRoute><Grupos /></ProtectedRoute>} />
-        <Route path="/admin/checkin" element={<ProtectedRoute><CheckinAdmin /></ProtectedRoute>} />
-        <Route path="/admin/formulario" element={<ProtectedRoute><Formulario /></ProtectedRoute>} />
-        <Route path="/admin/equipe" element={<ProtectedRoute><Equipe /></ProtectedRoute>} />
-        <Route path="/admin/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
+        <Route path="/admin/crm" element={<ProtectedRoute requiredPermission="canViewCRM"><CRM /></ProtectedRoute>} />
+        <Route path="/admin/crm/:id" element={<ProtectedRoute requiredPermission="canViewCRM"><EncontristaDetalhe /></ProtectedRoute>} />
+        <Route path="/admin/grupos" element={<ProtectedRoute requiredPermission="canViewGrupos"><Grupos /></ProtectedRoute>} />
+        <Route path="/admin/checkin" element={<ProtectedRoute requiredPermission="canViewCheckin"><CheckinAdmin /></ProtectedRoute>} />
+        <Route path="/admin/formulario" element={<ProtectedRoute requiredPermission="canViewFormulario"><Formulario /></ProtectedRoute>} />
+        <Route path="/admin/equipe" element={<ProtectedRoute requiredPermission="canViewEquipe"><Equipe /></ProtectedRoute>} />
+        <Route path="/admin/configuracoes" element={<ProtectedRoute requiredPermission="canViewFormulario"><Configuracoes /></ProtectedRoute>} />
+        <Route path="/admin/financeiro" element={<ProtectedRoute requiredPermission="canViewFinanceiro"><Financeiro /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
