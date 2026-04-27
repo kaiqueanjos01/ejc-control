@@ -83,17 +83,17 @@ export function FinanceiroConfig({ encontroId, categorias, itens, onClose, onUpd
   return (
     <div className="fin-config-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <div className="fin-config-modal">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h3 style={{ margin: 0 }}>Categorias &amp; Itens</h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-            <X size={20} />
+        <div className="fin-config-modal-header">
+          <h3>Categorias &amp; Itens</h3>
+          <button className="btn btn-ghost btn-icon" onClick={onClose} title="Fechar">
+            <X size={18} />
           </button>
         </div>
 
         {error && (
-          <div className="admin-error" style={{ marginBottom: 12 }}>
+          <div className="admin-error" style={{ marginBottom: 'var(--space-3)' }}>
             {error}
-            <button onClick={() => setError(null)} style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
+            <button onClick={() => setError(null)} style={{ marginLeft: 'var(--space-2)', background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
           </div>
         )}
 
@@ -114,17 +114,16 @@ export function FinanceiroConfig({ encontroId, categorias, itens, onClose, onUpd
                   {editandoCatId === cat.id ? (
                     <>
                       <input
-                        className="form-input"
+                        className="form-input fin-config-list-name"
                         value={editandoCatNome}
                         onChange={e => setEditandoCatNome(e.target.value)}
-                        style={{ flex: 1 }}
                       />
                       <button className="btn btn-sm btn-success" onClick={() => handleSalvarCategoria(cat.id)}>Salvar</button>
                       <button className="btn btn-sm btn-secondary" onClick={() => setEditandoCatId(null)}>Cancelar</button>
                     </>
                   ) : (
                     <>
-                      <span style={{ flex: 1 }}>{cat.nome}</span>
+                      <span className="fin-config-list-name">{cat.nome}</span>
                       <button className="btn btn-sm btn-secondary" onClick={() => { setEditandoCatId(cat.id); setEditandoCatNome(cat.nome) }}>Editar</button>
                       <button className="btn btn-sm btn-danger" onClick={() => handleDeletarCategoria(cat.id)}>Excluir</button>
                     </>
@@ -139,7 +138,6 @@ export function FinanceiroConfig({ encontroId, categorias, itens, onClose, onUpd
                 onChange={e => setNovaCategoria(e.target.value)}
                 placeholder="Nova categoria..."
                 onKeyDown={e => e.key === 'Enter' && handleCriarCategoria()}
-                style={{ flex: 1 }}
               />
               <button className="btn btn-primary" onClick={handleCriarCategoria}>Adicionar</button>
             </div>
@@ -154,23 +152,21 @@ export function FinanceiroConfig({ encontroId, categorias, itens, onClose, onUpd
                   {editandoItemId === item.id ? (
                     <>
                       <input
-                        className="form-input"
+                        className="form-input fin-config-list-name"
                         value={editandoItemNome}
                         onChange={e => setEditandoItemNome(e.target.value)}
-                        style={{ flex: 2, minWidth: 80 }}
                         placeholder="Nome"
                       />
                       <input
-                        className="form-input"
+                        className="form-input fin-unidade-input"
                         value={editandoItemUnidade}
                         onChange={e => setEditandoItemUnidade(e.target.value)}
-                        style={{ width: 70 }}
                         placeholder="unid"
                       />
                       <select
+                        className="form-select fin-config-list-name"
                         value={editandoItemCategoria}
                         onChange={e => setEditandoItemCategoria(e.target.value)}
-                        style={{ flex: 1 }}
                       >
                         {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
                       </select>
@@ -179,9 +175,9 @@ export function FinanceiroConfig({ encontroId, categorias, itens, onClose, onUpd
                     </>
                   ) : (
                     <>
-                      <span style={{ flex: 1 }}>{item.nome}</span>
-                      <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>{item.unidade}</span>
-                      <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>{item.fin_categorias?.nome}</span>
+                      <span className="fin-config-list-name">{item.nome}</span>
+                      <span className="fin-config-list-meta">{item.unidade}</span>
+                      <span className="fin-config-list-meta">{item.fin_categorias?.nome}</span>
                       <button
                         className="btn btn-sm btn-secondary"
                         onClick={() => {
@@ -197,27 +193,25 @@ export function FinanceiroConfig({ encontroId, categorias, itens, onClose, onUpd
                 </li>
               ))}
             </ul>
-            <div className="fin-config-add" style={{ flexWrap: 'wrap', gap: 8 }}>
+          <div className="fin-config-add">
               <input
                 className="form-input"
                 value={novoItemNome}
                 onChange={e => setNovoItemNome(e.target.value)}
                 placeholder="Nome do item"
-                style={{ flex: 2, minWidth: 100 }}
               />
               <select
+                className="form-select"
                 value={novoItemCategoria}
                 onChange={e => setNovoItemCategoria(e.target.value)}
-                style={{ flex: 1 }}
               >
                 {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
               </select>
               <input
-                className="form-input"
+                className="form-input fin-unidade-input"
                 value={novoItemUnidade}
                 onChange={e => setNovoItemUnidade(e.target.value)}
                 placeholder="unid"
-                style={{ width: 80 }}
               />
               <button className="btn btn-primary" onClick={handleCriarItem}>Adicionar</button>
             </div>

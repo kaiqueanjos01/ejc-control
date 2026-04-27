@@ -195,7 +195,7 @@ export function Financeiro() {
           </button>
         </div>
 
-        {error && <div className="admin-error" style={{ marginBottom: 16 }}>{error}<button onClick={() => setError(null)} style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button></div>}
+        {error && <div className="admin-error">{error}<button onClick={() => setError(null)} style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button></div>}
 
         <div className="financeiro-tabs">
           {['resumo', 'despesas', 'doacoes'].map(t => (
@@ -323,7 +323,7 @@ function AbaResumo({ resumo, despesas, totalDespesas, totalDoacoesDinheiro }) {
                   ))}
                 </ul>
               ) : (
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0 }}>Sem despesas</p>
+                <p className="fin-empty" style={{ padding: 0, textAlign: 'left', fontSize: '0.8rem' }}>Sem despesas</p>
               )}
             </div>
           )
@@ -376,6 +376,7 @@ function AbaDespesas({
             <div className="form-group">
               <label>Item *</label>
               <select
+                className="form-select"
                 value={fdCriarItem ? '__novo__' : fdItemId}
                 onChange={e => {
                   if (e.target.value === '__novo__') {
@@ -402,6 +403,7 @@ function AbaDespesas({
                 <div className="form-group">
                   <label>Nome do item *</label>
                   <input
+                    className="form-input"
                     type="text"
                     value={fdNovoItemNome}
                     onChange={e => setFdNovoItemNome(e.target.value)}
@@ -410,7 +412,7 @@ function AbaDespesas({
                 </div>
                 <div className="form-group">
                   <label>Categoria *</label>
-                  <select value={fdNovoItemCategoria} onChange={e => setFdNovoItemCategoria(e.target.value)}>
+                  <select className="form-select" value={fdNovoItemCategoria} onChange={e => setFdNovoItemCategoria(e.target.value)}>
                     <option value="">Selecionar...</option>
                     {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
                   </select>
@@ -418,6 +420,7 @@ function AbaDespesas({
                 <div className="form-group">
                   <label>Unidade</label>
                   <input
+                    className="form-input"
                     type="text"
                     value={fdNovoItemUnidade}
                     onChange={e => setFdNovoItemUnidade(e.target.value)}
@@ -429,19 +432,19 @@ function AbaDespesas({
 
             <div className="form-group">
               <label>Quantidade *</label>
-              <input type="number" min="0.01" step="0.01" value={fdQtd} onChange={e => setFdQtd(e.target.value)} placeholder="0" />
+              <input className="form-input" type="number" min="0.01" step="0.01" value={fdQtd} onChange={e => setFdQtd(e.target.value)} placeholder="0" />
             </div>
             <div className="form-group">
               <label>Valor unitário (R$) *</label>
-              <input type="number" min="0" step="0.01" value={fdValor} onChange={e => setFdValor(e.target.value)} placeholder="0,00" />
+              <input className="form-input" type="number" min="0" step="0.01" value={fdValor} onChange={e => setFdValor(e.target.value)} placeholder="0,00" />
             </div>
             <div className="form-group">
               <label>Data *</label>
-              <input type="date" value={fdData} onChange={e => setFdData(e.target.value)} />
+              <input className="form-input" type="date" value={fdData} onChange={e => setFdData(e.target.value)} />
             </div>
             <div className="form-group">
               <label>Observação</label>
-              <input type="text" value={fdObs} onChange={e => setFdObs(e.target.value)} placeholder="Opcional" />
+              <input className="form-input" type="text" value={fdObs} onChange={e => setFdObs(e.target.value)} placeholder="Opcional" />
             </div>
           </div>
           <div className="financeiro-form-actions">
@@ -529,7 +532,7 @@ function AbaDoacoes({
           <div className="financeiro-form-grid">
             <div className="form-group">
               <label>Tipo *</label>
-              <select value={doTipo} onChange={e => setDoTipo(e.target.value)}>
+              <select className="form-select" value={doTipo} onChange={e => setDoTipo(e.target.value)}>
                 <option value="dinheiro">Dinheiro</option>
                 <option value="item">Item</option>
               </select>
@@ -538,7 +541,7 @@ function AbaDoacoes({
             {doTipo === 'dinheiro' && (
               <div className="form-group">
                 <label>Valor (R$) *</label>
-                <input type="number" min="0" step="0.01" value={doValor} onChange={e => setDoValor(e.target.value)} placeholder="0,00" />
+                <input className="form-input" type="number" min="0" step="0.01" value={doValor} onChange={e => setDoValor(e.target.value)} placeholder="0,00" />
               </div>
             )}
 
@@ -546,7 +549,7 @@ function AbaDoacoes({
               <>
                 <div className="form-group">
                   <label>Item *</label>
-                  <select value={doItemId} onChange={e => setDoItemId(e.target.value)}>
+                  <select className="form-select" value={doItemId} onChange={e => setDoItemId(e.target.value)}>
                     <option value="">Selecionar item...</option>
                     {itens.map(i => (
                       <option key={i.id} value={i.id}>
@@ -557,22 +560,22 @@ function AbaDoacoes({
                 </div>
                 <div className="form-group">
                   <label>Quantidade *</label>
-                  <input type="number" min="0.01" step="0.01" value={doQtd} onChange={e => setDoQtd(e.target.value)} placeholder="0" />
+                  <input className="form-input" type="number" min="0.01" step="0.01" value={doQtd} onChange={e => setDoQtd(e.target.value)} placeholder="0" />
                 </div>
               </>
             )}
 
             <div className="form-group">
               <label>Doador</label>
-              <input type="text" value={doDoador} onChange={e => setDoDoador(e.target.value)} placeholder="Nome (opcional)" />
+              <input className="form-input" type="text" value={doDoador} onChange={e => setDoDoador(e.target.value)} placeholder="Nome (opcional)" />
             </div>
             <div className="form-group">
               <label>Data *</label>
-              <input type="date" value={doData} onChange={e => setDoData(e.target.value)} />
+              <input className="form-input" type="date" value={doData} onChange={e => setDoData(e.target.value)} />
             </div>
             <div className="form-group">
               <label>Observação</label>
-              <input type="text" value={doObs} onChange={e => setDoObs(e.target.value)} placeholder="Opcional" />
+              <input className="form-input" type="text" value={doObs} onChange={e => setDoObs(e.target.value)} placeholder="Opcional" />
             </div>
           </div>
           <div className="financeiro-form-actions">
