@@ -268,7 +268,7 @@ export function Formulario() {
                     {novoCampo.tipo === 'select' && (
                       <div className="formulario-opcoes">
                         <label className="form-label">Opções *</label>
-                        {novoCampo.opcoes.map((op) => (
+                        {novoCampo.opcoes.map((op, i) => (
                           <div key={op} className="formulario-opcao-item">
                             <span>{op}</span>
                             <button

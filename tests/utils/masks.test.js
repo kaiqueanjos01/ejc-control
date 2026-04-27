@@ -1,11 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { applyMask, stripMask, MASKED_TYPES } from '../../src/utils/masks'
+import { applyMask, stripMask, MASKED_TYPES, TEXT_MASKED_TYPES } from '../../src/utils/masks'
 
 describe('MASKED_TYPES', () => {
   it('contains all masked types', () => {
     expect(MASKED_TYPES).toEqual(
       expect.arrayContaining(['phone', 'cpf', 'cnpj', 'cep', 'rg', 'currency'])
     )
+  })
+})
+
+describe('TEXT_MASKED_TYPES', () => {
+  it('includes all MASKED_TYPES except currency', () => {
+    expect(TEXT_MASKED_TYPES).not.toContain('currency')
+    expect(TEXT_MASKED_TYPES).toEqual(MASKED_TYPES.filter(t => t !== 'currency'))
   })
 })
 
