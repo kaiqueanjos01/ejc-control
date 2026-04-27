@@ -5,10 +5,12 @@ import {
   criarConviteAdmin,
   listarConvites,
   atualizarAdminRole,
+  atualizarAdminCoord,
   deletarAdmin,
   deletarConvite,
   ROLE_DESCRIPTIONS,
-  ROLE_PERMISSIONS,
+  ROLE_LABELS,
+  verificarPermissao,
 } from '../services/adminUsers'
 import './AdminUsersManager.css'
 
@@ -21,6 +23,7 @@ export default function AdminUsersManager() {
   const [showNovoConvite, setShowNovoConvite] = useState(false)
   const [novoEmail, setNovoEmail] = useState('')
   const [novoRole, setNovoRole] = useState('moderador')
+  const [novoIsCoord, setNovoIsCoord] = useState(false)
   const [deletandoId, setDeletandoId] = useState(null)
   const [linkGerado, setLinkGerado] = useState(null)
   const [linkCopiado, setLinkCopiado] = useState(false)
@@ -55,11 +58,12 @@ export default function AdminUsersManager() {
         setError('Email é obrigatório')
         return
       }
-      const convite = await criarConviteAdmin(novoEmail, novoRole)
+      const convite = await criarConviteAdmin(novoEmail, novoRole, novoIsCoord)
       const link = `${window.location.origin}/admin/convite/${convite.token}`
       setLinkGerado(link)
       setNovoEmail('')
       setNovoRole('moderador')
+      setNovoIsCoord(false)
       setShowNovoConvite(false)
       await carregarDados()
     } catch (err) {
@@ -120,7 +124,12 @@ export default function AdminUsersManager() {
     )
   }
 
-  const podeGerenciar = ROLE_PERMISSIONS[usuarioAtual.role]?.canCreateInvites
+  const podeConvidar = verificarPermissao(usuarioAtual, 'canCreateInvites')
+  const podeVerConvites = verificarPermissao(usuarioAtual, 'canViewInvites')
+  const podeEditarUsuarios = verificarPermissao(usuarioAtual, 'canEditUsers')
+  const podeDeletarUsuarios = verificarPermissao(usuarioAtual, 'canDeleteUsers')
+  const TEAM_ROLES_LOCAL = ['equipe_externa', 'bem_estar', 'supers']
+  const isAdmin = usuarioAtual.role === 'admin'
 
   return (
     <div className="admin-users-container">
@@ -145,11 +154,13 @@ export default function AdminUsersManager() {
 
       <div className="admin-info">
         <p>
-          <strong>Seu Role:</strong> {usuarioAtual.role} - {ROLE_DESCRIPTIONS[usuarioAtual.role]}
+          <strong>Seu papel:</strong> {ROLE_LABELS[usuarioAtual.role] ?? usuarioAtual.role}
+          {usuarioAtual.is_coord && <span style={{ marginLeft: 8, color: 'var(--color-primary)' }}>Coordenador</span>}
+          {' '}- {ROLE_DESCRIPTIONS[usuarioAtual.role]}
         </p>
       </div>
 
-      {podeGerenciar && (
+      {podeConvidar && (
         <button className="btn btn-primary" onClick={() => setShowNovoConvite(!showNovoConvite)}>
           {showNovoConvite ? 'Cancelar' : '+ Novo Convite'}
         </button>
@@ -157,24 +168,47 @@ export default function AdminUsersManager() {
 
       {showNovoConvite && (
         <div className="novo-convite-form">
-          <h3>Gerar Convite de Admin</h3>
+          <h3>Gerar Convite</h3>
           <div className="form-group">
             <label>Email *</label>
             <input
               type="email"
               value={novoEmail}
               onChange={(e) => setNovoEmail(e.target.value)}
-              placeholder="admin@example.com"
+              placeholder="pessoa@example.com"
             />
           </div>
           <div className="form-group">
-            <label>Role *</label>
+            <label>Papel *</label>
             <select value={novoRole} onChange={(e) => setNovoRole(e.target.value)}>
-              <option value="admin">Admin - {ROLE_DESCRIPTIONS.admin}</option>
-              <option value="moderador">Moderador - {ROLE_DESCRIPTIONS.moderador}</option>
-              <option value="visualizador">Visualizador - {ROLE_DESCRIPTIONS.visualizador}</option>
+              {isAdmin ? (
+                <>
+                  <option value="admin">Admin — {ROLE_DESCRIPTIONS.admin}</option>
+                  <option value="moderador">Moderador — {ROLE_DESCRIPTIONS.moderador}</option>
+                  <option value="visualizador">Visualizador — {ROLE_DESCRIPTIONS.visualizador}</option>
+                  <option value="equipe_externa">Equipe Externa — {ROLE_DESCRIPTIONS.equipe_externa}</option>
+                  <option value="bem_estar">Bem Estar — {ROLE_DESCRIPTIONS.bem_estar}</option>
+                  <option value="supers">Supers — {ROLE_DESCRIPTIONS.supers}</option>
+                </>
+              ) : (
+                <option value={usuarioAtual.role}>
+                  {ROLE_LABELS[usuarioAtual.role]} — {ROLE_DESCRIPTIONS[usuarioAtual.role]}
+                </option>
+              )}
             </select>
           </div>
+          {isAdmin && TEAM_ROLES_LOCAL.includes(novoRole) && (
+            <div className="form-group">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={novoIsCoord}
+                  onChange={(e) => setNovoIsCoord(e.target.checked)}
+                />
+                Tornar coordenador de equipe
+              </label>
+            </div>
+          )}
           <button className="btn btn-success" onClick={handleCriarConvite}>
             Gerar Convite
           </button>
@@ -182,7 +216,7 @@ export default function AdminUsersManager() {
       )}
 
       {/* Seção de Convites Ativos */}
-      {podeGerenciar && convites.length > 0 && (
+      {(podeVerConvites || podeConvidar) && convites.length > 0 && (
         <div className="convites-section">
           <h3>Convites Ativos ({convites.length})</h3>
           <div className="table-responsive">
@@ -201,7 +235,10 @@ export default function AdminUsersManager() {
                   <tr key={convite.id}>
                     <td>{convite.email}</td>
                     <td>
-                      <span className={`badge badge-${convite.role}`}>{convite.role}</span>
+                      <span className={`badge badge-${convite.role}`}>
+                        {ROLE_LABELS[convite.role] ?? convite.role}
+                      </span>
+                      {convite.is_coord && <span style={{ marginLeft: 4, fontSize: '0.75rem', opacity: 0.7 }}>· Coord</span>}
                     </td>
                     <td>{new Date(convite.expira_em).toLocaleDateString('pt-BR')}</td>
                     <td>
@@ -230,7 +267,11 @@ export default function AdminUsersManager() {
 
       {/* Seção de Admins */}
       <div className="admins-section">
-        <h3>Usuários Ativos ({admins.length})</h3>
+        <h3>
+          {usuarioAtual.is_coord && ['equipe_externa', 'bem_estar', 'supers'].includes(usuarioAtual.role)
+            ? `Membros da Equipe (${admins.length})`
+            : `Usuários Ativos (${admins.length})`}
+        </h3>
 
         {loading ? (
           <p>Carregando...</p>
@@ -243,9 +284,9 @@ export default function AdminUsersManager() {
                 <tr>
                   <th>Nome</th>
                   <th>Email</th>
-                  <th>Role</th>
+                  <th>Papel</th>
                   <th>Criado em</th>
-                  {podeGerenciar && <th>Ações</th>}
+                  {(podeEditarUsuarios || podeDeletarUsuarios) && <th>Ações</th>}
                 </tr>
               </thead>
               <tbody>
@@ -257,49 +298,74 @@ export default function AdminUsersManager() {
                     </td>
                     <td>{admin.email}</td>
                     <td>
-                      {podeGerenciar ? (
-                        <select
-                          value={admin.role}
-                          onChange={(e) => handleAtualizarRole(admin.id, e.target.value)}
-                          disabled={admin.id === usuarioAtual.id}
-                        >
-                          <option value="admin">admin</option>
-                          <option value="moderador">moderador</option>
-                          <option value="visualizador">visualizador</option>
-                        </select>
+                      {podeEditarUsuarios ? (
+                        <>
+                          <select
+                            value={admin.role}
+                            onChange={(e) => handleAtualizarRole(admin.id, e.target.value)}
+                            disabled={admin.id === usuarioAtual.id}
+                          >
+                            <option value="admin">Admin</option>
+                            <option value="moderador">Moderador</option>
+                            <option value="visualizador">Visualizador</option>
+                            <option value="equipe_externa">Equipe Externa</option>
+                            <option value="bem_estar">Bem Estar</option>
+                            <option value="supers">Supers</option>
+                          </select>
+                          {TEAM_ROLES_LOCAL.includes(admin.role) && (
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, fontSize: '0.8rem', cursor: 'pointer' }}>
+                              <input
+                                type="checkbox"
+                                checked={admin.is_coord ?? false}
+                                disabled={admin.id === usuarioAtual.id}
+                                onChange={(e) => atualizarAdminCoord(admin.id, e.target.checked).then(carregarDados).catch(err => setError(err.message))}
+                              />
+                              Coord
+                            </label>
+                          )}
+                        </>
                       ) : (
-                        <span className={`badge badge-${admin.role}`}>{admin.role}</span>
+                        <>
+                          <span className={`badge badge-${admin.role}`}>
+                            {ROLE_LABELS[admin.role] ?? admin.role}
+                          </span>
+                          {TEAM_ROLES_LOCAL.includes(admin.role) && admin.is_coord && (
+                            <span style={{ marginLeft: 4, fontSize: '0.75rem', opacity: 0.7 }}>· Coord</span>
+                          )}
+                        </>
                       )}
                     </td>
                     <td>{new Date(admin.criado_em).toLocaleDateString('pt-BR')}</td>
-                    {podeGerenciar && (
+                    {(podeEditarUsuarios || podeDeletarUsuarios) && (
                       <td>
                         {admin.id === usuarioAtual.id ? (
                           <span className="text-muted">-</span>
                         ) : (
                           <div className="action-buttons">
-                            {deletandoId === admin.id ? (
-                              <>
+                            {podeDeletarUsuarios && (
+                              deletandoId === admin.id ? (
+                                <>
+                                  <button
+                                    className="btn btn-sm btn-danger"
+                                    onClick={() => handleDeletarAdmin(admin.id)}
+                                  >
+                                    Confirmar?
+                                  </button>
+                                  <button
+                                    className="btn btn-sm btn-secondary"
+                                    onClick={() => setDeletandoId(null)}
+                                  >
+                                    Cancelar
+                                  </button>
+                                </>
+                              ) : (
                                 <button
                                   className="btn btn-sm btn-danger"
-                                  onClick={() => handleDeletarAdmin(admin.id)}
+                                  onClick={() => setDeletandoId(admin.id)}
                                 >
-                                  Confirmar?
+                                  Deletar
                                 </button>
-                                <button
-                                  className="btn btn-sm btn-secondary"
-                                  onClick={() => setDeletandoId(null)}
-                                >
-                                  Cancelar
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                className="btn btn-sm btn-danger"
-                                onClick={() => setDeletandoId(admin.id)}
-                              >
-                                Deletar
-                              </button>
+                              )
                             )}
                           </div>
                         )}
