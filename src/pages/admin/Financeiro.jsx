@@ -342,3 +342,294 @@ function AbaResumo({ resumo, despesas, totalDespesas, totalDoacoesDinheiro }) {
     </>
   )
 }
+
+// ─── Aba Despesas ─────────────────────────────────────────────────────────────
+
+function AbaDespesas({
+  despesas, itens, categorias,
+  showForm, setShowForm,
+  fdItemId, setFdItemId,
+  fdCriarItem, setFdCriarItem,
+  fdNovoItemNome, setFdNovoItemNome,
+  fdNovoItemCategoria, setFdNovoItemCategoria,
+  fdNovoItemUnidade, setFdNovoItemUnidade,
+  fdQtd, setFdQtd,
+  fdValor, setFdValor,
+  fdData, setFdData,
+  fdObs, setFdObs,
+  fdSaving, onSalvar, onCancelar,
+  confirmandoId, setConfirmandoId, confirmandoTipo, setConfirmandoTipo, onDeletar,
+}) {
+  return (
+    <div>
+      <div className="financeiro-toolbar">
+        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'Cancelar' : '+ Despesa'}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="financeiro-form">
+          <h3>Nova Despesa</h3>
+          <div className="financeiro-form-grid">
+            <div className="form-group">
+              <label>Item *</label>
+              <select
+                value={fdCriarItem ? '__novo__' : fdItemId}
+                onChange={e => {
+                  if (e.target.value === '__novo__') {
+                    setFdCriarItem(true)
+                    setFdItemId('')
+                  } else {
+                    setFdCriarItem(false)
+                    setFdItemId(e.target.value)
+                  }
+                }}
+              >
+                <option value="">Selecionar item...</option>
+                {itens.map(i => (
+                  <option key={i.id} value={i.id}>
+                    {i.nome} ({i.unidade}) — {i.fin_categorias?.nome}
+                  </option>
+                ))}
+                <option value="__novo__">+ Criar novo item</option>
+              </select>
+            </div>
+
+            {fdCriarItem && (
+              <>
+                <div className="form-group">
+                  <label>Nome do item *</label>
+                  <input
+                    type="text"
+                    value={fdNovoItemNome}
+                    onChange={e => setFdNovoItemNome(e.target.value)}
+                    placeholder="Ex: Arroz"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Categoria *</label>
+                  <select value={fdNovoItemCategoria} onChange={e => setFdNovoItemCategoria(e.target.value)}>
+                    <option value="">Selecionar...</option>
+                    {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Unidade</label>
+                  <input
+                    type="text"
+                    value={fdNovoItemUnidade}
+                    onChange={e => setFdNovoItemUnidade(e.target.value)}
+                    placeholder="kg, unid, resma..."
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="form-group">
+              <label>Quantidade *</label>
+              <input type="number" min="0.01" step="0.01" value={fdQtd} onChange={e => setFdQtd(e.target.value)} placeholder="0" />
+            </div>
+            <div className="form-group">
+              <label>Valor unitário (R$) *</label>
+              <input type="number" min="0" step="0.01" value={fdValor} onChange={e => setFdValor(e.target.value)} placeholder="0,00" />
+            </div>
+            <div className="form-group">
+              <label>Data *</label>
+              <input type="date" value={fdData} onChange={e => setFdData(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Observação</label>
+              <input type="text" value={fdObs} onChange={e => setFdObs(e.target.value)} placeholder="Opcional" />
+            </div>
+          </div>
+          <div className="financeiro-form-actions">
+            <button className="btn btn-success" onClick={onSalvar} disabled={fdSaving}>
+              {fdSaving ? 'Salvando...' : 'Salvar'}
+            </button>
+            <button className="btn btn-secondary" onClick={onCancelar}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {despesas.length === 0 ? (
+        <p className="fin-empty">Nenhuma despesa registrada.</p>
+      ) : (
+        <div className="financeiro-table-wrapper">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Item</th>
+                <th>Categoria</th>
+                <th>Qtd</th>
+                <th>Valor unit.</th>
+                <th>Total</th>
+                <th>Obs</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {despesas.map(d => (
+                <tr key={d.id}>
+                  <td>{new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
+                  <td>{d.fin_itens?.nome}</td>
+                  <td>{d.fin_itens?.fin_categorias?.nome}</td>
+                  <td>{d.quantidade} {d.fin_itens?.unidade}</td>
+                  <td>{formatBRL(d.valor_unitario)}</td>
+                  <td><strong>{formatBRL(d.quantidade * d.valor_unitario)}</strong></td>
+                  <td>{d.observacao || '—'}</td>
+                  <td>
+                    {confirmandoId === d.id && confirmandoTipo === 'despesa' ? (
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        <button className="btn btn-sm btn-danger" onClick={() => onDeletar(d.id, 'despesa')}>Confirmar?</button>
+                        <button className="btn btn-sm btn-secondary" onClick={() => { setConfirmandoId(null); setConfirmandoTipo(null) }}>Não</button>
+                      </div>
+                    ) : (
+                      <button className="btn btn-sm btn-danger" onClick={() => { setConfirmandoId(d.id); setConfirmandoTipo('despesa') }}>Excluir</button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Aba Doações ──────────────────────────────────────────────────────────────
+
+function AbaDoacoes({
+  doacoes, itens,
+  showForm, setShowForm,
+  doTipo, setDoTipo,
+  doValor, setDoValor,
+  doItemId, setDoItemId,
+  doQtd, setDoQtd,
+  doDoador, setDoDoador,
+  doData, setDoData,
+  doObs, setDoObs,
+  doSaving, onSalvar, onCancelar,
+  confirmandoId, setConfirmandoId, confirmandoTipo, setConfirmandoTipo, onDeletar,
+}) {
+  return (
+    <div>
+      <div className="financeiro-toolbar">
+        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'Cancelar' : '+ Doação'}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="financeiro-form">
+          <h3>Nova Doação</h3>
+          <div className="financeiro-form-grid">
+            <div className="form-group">
+              <label>Tipo *</label>
+              <select value={doTipo} onChange={e => setDoTipo(e.target.value)}>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="item">Item</option>
+              </select>
+            </div>
+
+            {doTipo === 'dinheiro' && (
+              <div className="form-group">
+                <label>Valor (R$) *</label>
+                <input type="number" min="0" step="0.01" value={doValor} onChange={e => setDoValor(e.target.value)} placeholder="0,00" />
+              </div>
+            )}
+
+            {doTipo === 'item' && (
+              <>
+                <div className="form-group">
+                  <label>Item *</label>
+                  <select value={doItemId} onChange={e => setDoItemId(e.target.value)}>
+                    <option value="">Selecionar item...</option>
+                    {itens.map(i => (
+                      <option key={i.id} value={i.id}>
+                        {i.nome} ({i.unidade}) — {i.fin_categorias?.nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Quantidade *</label>
+                  <input type="number" min="0.01" step="0.01" value={doQtd} onChange={e => setDoQtd(e.target.value)} placeholder="0" />
+                </div>
+              </>
+            )}
+
+            <div className="form-group">
+              <label>Doador</label>
+              <input type="text" value={doDoador} onChange={e => setDoDoador(e.target.value)} placeholder="Nome (opcional)" />
+            </div>
+            <div className="form-group">
+              <label>Data *</label>
+              <input type="date" value={doData} onChange={e => setDoData(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Observação</label>
+              <input type="text" value={doObs} onChange={e => setDoObs(e.target.value)} placeholder="Opcional" />
+            </div>
+          </div>
+          <div className="financeiro-form-actions">
+            <button className="btn btn-success" onClick={onSalvar} disabled={doSaving}>
+              {doSaving ? 'Salvando...' : 'Salvar'}
+            </button>
+            <button className="btn btn-secondary" onClick={onCancelar}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {doacoes.length === 0 ? (
+        <p className="fin-empty">Nenhuma doação registrada.</p>
+      ) : (
+        <div className="financeiro-table-wrapper">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Doador</th>
+                <th>Tipo</th>
+                <th>Valor / Item</th>
+                <th>Obs</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {doacoes.map(d => (
+                <tr key={d.id}>
+                  <td>{new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
+                  <td>{d.doador || '—'}</td>
+                  <td>
+                    <span className={`badge badge-${d.tipo === 'dinheiro' ? 'supers' : 'bem_estar'}`}>
+                      {d.tipo === 'dinheiro' ? 'Dinheiro' : 'Item'}
+                    </span>
+                  </td>
+                  <td>
+                    {d.tipo === 'dinheiro'
+                      ? formatBRL(d.valor)
+                      : `${d.quantidade} ${d.fin_itens?.unidade} de ${d.fin_itens?.nome}`}
+                  </td>
+                  <td>{d.observacao || '—'}</td>
+                  <td>
+                    {confirmandoId === d.id && confirmandoTipo === 'doacao' ? (
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        <button className="btn btn-sm btn-danger" onClick={() => onDeletar(d.id, 'doacao')}>Confirmar?</button>
+                        <button className="btn btn-sm btn-secondary" onClick={() => { setConfirmandoId(null); setConfirmandoTipo(null) }}>Não</button>
+                      </div>
+                    ) : (
+                      <button className="btn btn-sm btn-danger" onClick={() => { setConfirmandoId(d.id); setConfirmandoTipo('doacao') }}>Excluir</button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
