@@ -5,6 +5,8 @@ import { UserX, Clock, FileText, CheckCircle, Check, Link, Users, UserPlus, X } 
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas, criarEncontrista } from '../../services/encontristas'
+import { useMaskInput } from '../../hooks/useMaskInput'
+import { applyMask } from '../../utils/masks'
 import './CRM.css'
 
 export function CRM() {
@@ -15,7 +17,7 @@ export function CRM() {
   const [loading, setLoading] = useState(true)
   const [showNovoModal, setShowNovoModal] = useState(false)
   const [novoNome, setNovoNome] = useState('')
-  const [novoTelefone, setNovoTelefone] = useState('')
+  const { inputValue: telDisplay, handleChange: handleTelChange, rawValue: novoTelefone, reset: resetTel } = useMaskInput('phone')
   const [salvando, setSalvando] = useState(false)
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function CRM() {
       const novo = await criarEncontrista({ encontroId, nome: novoNome, telefone: novoTelefone })
       setEncontristas(prev => [novo, ...prev])
       setNovoNome('')
-      setNovoTelefone('')
+      resetTel()
       setShowNovoModal(false)
     } finally {
       setSalvando(false)
@@ -136,8 +138,9 @@ export function CRM() {
                 <input
                   className="form-input"
                   placeholder="(11) 99999-9999"
-                  value={novoTelefone}
-                  onChange={e => setNovoTelefone(e.target.value)}
+                  value={telDisplay}
+                  onChange={handleTelChange}
+                  inputMode="tel"
                   required
                 />
               </div>
@@ -214,7 +217,7 @@ export function CRM() {
                                   )}
                                 </div>
                                 <div className="card-body">
-                                  <p className="card-phone">{encontrista.telefone}</p>
+                                  <p className="card-phone">{applyMask(encontrista.telefone ?? '', 'phone')}</p>
                                   <div className="card-status">
                                     {encontrista.checkin_at && (
                                       <span className="status-badge checkin">

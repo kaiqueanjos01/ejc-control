@@ -7,6 +7,7 @@ import { buscarEncontristaPorId, atualizarEncontrista } from '../../services/enc
 import { listarCampos } from '../../services/campos'
 import { listarGrupos, atribuirGrupo } from '../../services/grupos'
 import { DynamicForm } from '../../components/DynamicForm'
+import { applyMask, stripMask } from '../../utils/masks'
 import './EncontristaDetalhe.css'
 
 export function EncontristaDetalhe() {
@@ -73,7 +74,7 @@ export function EncontristaDetalhe() {
       <div className="encontrista-header">
         <div className="header-info">
           <h2 className="header-title">{encontrista.nome}</h2>
-          <p className="header-phone">{encontrista.telefone}</p>
+          <p className="header-phone">{applyMask(encontrista.telefone ?? '', 'phone')}</p>
           {encontrista.checkin_at && (
             <div className="badge badge-success">
               <Check size={11} /> Check-in: {new Date(encontrista.checkin_at).toLocaleString('pt-BR')}
@@ -123,8 +124,8 @@ export function EncontristaDetalhe() {
           <input
             type="tel"
             className="form-input"
-            value={encontrista.telefone}
-            onChange={e => setEncontrista(prev => ({ ...prev, telefone: e.target.value }))}
+            value={applyMask(encontrista.telefone ?? '', 'phone')}
+            onChange={e => setEncontrista(prev => ({ ...prev, telefone: stripMask(e.target.value) }))}
           />
         </div>
 
