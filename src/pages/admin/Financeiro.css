@@ -287,3 +287,19 @@
   width: 80px;
   flex: none;
 }
+
+/* Inventário */
+.inventario-section {
+  margin-top: var(--space-6);
+}
+
+.inventario-titulo {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

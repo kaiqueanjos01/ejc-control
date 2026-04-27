@@ -3,6 +3,7 @@ import {
   calcularTotalPorCategoria,
   calcularTotalDespesas,
   calcularTotalDoacoesDinheiro,
+  calcularInventario,
 } from '../../src/services/financeiro'
 
 const categorias = [
@@ -82,5 +83,40 @@ describe('calcularTotalDoacoesDinheiro', () => {
       { id: 'do-1', tipo: 'item', valor: null, item_id: 'item-1', quantidade: 2 },
     ]
     expect(calcularTotalDoacoesDinheiro(soDoacoesItem)).toBe(0)
+  })
+})
+
+describe('calcularInventario', () => {
+  const doacoes = [
+    { id: 'do-1', tipo: 'item',     item_id: 'item-1', quantidade: 3 },
+    { id: 'do-2', tipo: 'dinheiro', valor: 100 },
+  ]
+
+  it('soma comprado e doado por item', () => {
+    const resultado = calcularInventario(itens, despesas, doacoes)
+    const arroz = resultado.find(i => i.id === 'item-1')
+    expect(arroz.qtdComprada).toBe(10)
+    expect(arroz.qtdDoada).toBe(3)
+    expect(arroz.qtdTotal).toBe(13)
+  })
+
+  it('exclui itens sem movimentação', () => {
+    const resultado = calcularInventario(
+      [{ id: 'item-sem-mov', categoria_id: 'cat-1', nome: 'Inativo', unidade: 'unid' }],
+      [],
+      []
+    )
+    expect(resultado).toHaveLength(0)
+  })
+
+  it('conta apenas doações do tipo item', () => {
+    const resultado = calcularInventario(itens, [], doacoes)
+    const arroz = resultado.find(i => i.id === 'item-1')
+    expect(arroz.qtdDoada).toBe(3)
+    expect(arroz.qtdComprada).toBe(0)
+  })
+
+  it('retorna lista vazia quando sem itens', () => {
+    expect(calcularInventario([], [], [])).toEqual([])
   })
 })

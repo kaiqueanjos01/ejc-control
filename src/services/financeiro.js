@@ -23,6 +23,18 @@ export function calcularTotalDoacoesDinheiro(doacoes) {
     .reduce((sum, d) => sum + (d.valor || 0), 0)
 }
 
+export function calcularInventario(itens, despesas, doacoes) {
+  return itens.map(item => {
+    const qtdComprada = despesas
+      .filter(d => d.item_id === item.id)
+      .reduce((s, d) => s + d.quantidade, 0)
+    const qtdDoada = doacoes
+      .filter(d => d.tipo === 'item' && d.item_id === item.id)
+      .reduce((s, d) => s + (d.quantidade || 0), 0)
+    return { ...item, qtdComprada, qtdDoada, qtdTotal: qtdComprada + qtdDoada }
+  }).filter(item => item.qtdTotal > 0)
+}
+
 // ─── Categorias ───────────────────────────────────────────────────────────────
 
 export async function listarCategorias(encontroId) {

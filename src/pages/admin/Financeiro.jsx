@@ -15,6 +15,7 @@ import {
   calcularTotalPorCategoria,
   calcularTotalDespesas,
   calcularTotalDoacoesDinheiro,
+  calcularInventario,
 } from '../../services/financeiro'
 import { FinanceiroConfig } from '../../components/FinanceiroConfig'
 import './Financeiro.css'
@@ -172,6 +173,7 @@ export function Financeiro() {
   const resumoPorCategoria = calcularTotalPorCategoria(categorias, itens, despesas)
   const totalDespesas = calcularTotalDespesas(despesas)
   const totalDoacoesDinheiro = calcularTotalDoacoesDinheiro(doacoes)
+  const inventario = calcularInventario(itens, despesas, doacoes)
 
   // ── render ────────────────────────────────────────────────────────────────
 
@@ -219,6 +221,7 @@ export function Financeiro() {
                 despesas={despesas}
                 totalDespesas={totalDespesas}
                 totalDoacoesDinheiro={totalDoacoesDinheiro}
+                inventario={inventario}
               />
             )}
             {aba === 'despesas' && (
@@ -285,7 +288,7 @@ export function Financeiro() {
 
 // ─── Aba Resumo ───────────────────────────────────────────────────────────────
 
-function AbaResumo({ resumo, despesas, totalDespesas, totalDoacoesDinheiro }) {
+function AbaResumo({ resumo, despesas, totalDespesas, totalDoacoesDinheiro, inventario }) {
   if (resumo.length === 0) {
     return <p className="fin-empty">Nenhuma categoria cadastrada. Use "Categorias &amp; Itens" para começar.</p>
   }
@@ -340,6 +343,38 @@ function AbaResumo({ resumo, despesas, totalDespesas, totalDoacoesDinheiro }) {
           <span className={`resumo-rodape-valor ${totalDoacoesDinheiro > 0 ? 'positivo' : ''}`}>{formatBRL(totalDoacoesDinheiro)}</span>
         </div>
       </div>
+
+      {inventario.length > 0 && (
+        <div className="inventario-section">
+          <h3 className="inventario-titulo">Inventário</h3>
+          <div className="financeiro-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Categoria</th>
+                  <th>Unidade</th>
+                  <th>Comprado</th>
+                  <th>Doado</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inventario.map(item => (
+                  <tr key={item.id}>
+                    <td>{item.nome}</td>
+                    <td>{item.fin_categorias?.nome}</td>
+                    <td>{item.unidade}</td>
+                    <td>{item.qtdComprada > 0 ? item.qtdComprada : '—'}</td>
+                    <td>{item.qtdDoada > 0 ? item.qtdDoada : '—'}</td>
+                    <td><strong>{item.qtdTotal}</strong></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </>
   )
 }
