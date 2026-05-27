@@ -74,3 +74,11 @@ export async function buscarEncontristasPorNome(encontroId, nome) {
   if (error) throw error
   return data
 }
+
+export async function excluirEncontrista(id) {
+  const { error } = await supabase
+    .from('encontristas')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
