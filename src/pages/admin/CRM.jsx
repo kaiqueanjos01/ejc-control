@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { UserX, Clock, FileText, CheckCircle, Check, Link, Users, UserPlus, X } from 'lucide-react'
+import { UserX, Clock, FileText, CheckCircle, Check, Link, Users, UserPlus, X, Trash2 } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
-import { listarEncontristas, criarEncontrista } from '../../services/encontristas'
+import { listarEncontristas, criarEncontrista, excluirEncontrista } from '../../services/encontristas'
 import { useMaskInput } from '../../hooks/useMaskInput'
 import { applyMask } from '../../utils/masks'
+import { useAdminRole } from '../../hooks/useAdminRole'
 import './CRM.css'
 
 export function CRM() {
   const { encontroId } = useEncontro()
   const navigate = useNavigate()
+  const { role } = useAdminRole()
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(null) // null | { id, nome }
+  const [excluindo, setExcluindo] = useState(false)
   const [encontristas, setEncontristas] = useState([])
   const [busca, setBusca] = useState('')
   const [loading, setLoading] = useState(true)
@@ -72,6 +76,23 @@ export function CRM() {
   function handleDragEnd(result) {
     // O drag-and-drop é apenas visual neste kanban
     // Se precisar persistir, adicione lógica de atualização aqui
+  }
+
+  async function handleExcluirEncontrista() {
+    if (!confirmandoExclusao) return
+    setExcluindo(true)
+    const idParaExcluir = confirmandoExclusao.id
+    setConfirmandoExclusao(null)
+    setEncontristas(prev => prev.filter(e => e.id !== idParaExcluir))
+    try {
+      await excluirEncontrista(idParaExcluir)
+    } catch (err) {
+      // Reverte se falhou
+      listarEncontristas(encontroId).then(setEncontristas)
+      alert('Erro ao excluir encontrista: ' + err.message)
+    } finally {
+      setExcluindo(false)
+    }
   }
 
   if (loading) {
@@ -153,6 +174,43 @@ export function CRM() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {confirmandoExclusao && (
+        <div className="crm-modal-overlay" onClick={() => !excluindo && setConfirmandoExclusao(null)}>
+          <div className="crm-modal" onClick={e => e.stopPropagation()}>
+            <div className="crm-modal-header">
+              <h3>Excluir encontrista</h3>
+              <button
+                className="crm-modal-close"
+                onClick={() => setConfirmandoExclusao(null)}
+                disabled={excluindo}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className="crm-modal-text">
+              Tem certeza que deseja excluir <strong>{confirmandoExclusao.nome}</strong>?{' '}
+              Essa ação não pode ser desfeita.
+            </p>
+            <div className="crm-modal-actions">
+              <button
+                className="btn btn-danger"
+                onClick={handleExcluirEncontrista}
+                disabled={excluindo}
+              >
+                {excluindo ? 'Excluindo...' : 'Excluir'}
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setConfirmandoExclusao(null)}
+                disabled={excluindo}
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -242,6 +300,18 @@ export function CRM() {
                                   >
                                     <Link size={11} /> Copiar link
                                   </button>
+                                  {role === 'admin' && (
+                                    <button
+                                      className="delete-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        setConfirmandoExclusao({ id: encontrista.id, nome: encontrista.nome })
+                                      }}
+                                      title="Excluir encontrista"
+                                    >
+                                      <Trash2 size={11} />
+                                    </button>
+                                  )}
                                 </div>
                               </div>
                             )}
