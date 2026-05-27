@@ -140,8 +140,8 @@ BEGIN
 
   UPDATE admin_invites
   SET usado_em = now()
-  WHERE id = v_invite.id;
+  WHERE admin_invites.id = v_invite.id;
 
-  RETURN QUERY SELECT v_user_id, v_invite.role, v_invite.is_coord;
+  RETURN QUERY SELECT v_user_id, v_invite.role::TEXT, v_invite.is_coord;
 END;
 $$;
