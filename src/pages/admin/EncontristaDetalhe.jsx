@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ChevronLeft, Check } from 'lucide-react'
+import { ChevronLeft, Check, Trash2, X } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
-import { buscarEncontristaPorId, atualizarEncontrista } from '../../services/encontristas'
+import { buscarEncontristaPorId, atualizarEncontrista, excluirEncontrista } from '../../services/encontristas'
 import { listarCampos } from '../../services/campos'
 import { listarGrupos, atribuirGrupo } from '../../services/grupos'
 import { DynamicForm } from '../../components/DynamicForm'
 import { applyMask, stripMask } from '../../utils/masks'
+import { useAdminRole } from '../../hooks/useAdminRole'
 import './EncontristaDetalhe.css'
 
 export function EncontristaDetalhe() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { encontroId } = useEncontro()
+  const { role } = useAdminRole()
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false)
+  const [excluindo, setExcluindo] = useState(false)
   const [encontrista, setEncontrista] = useState(null)
   const [campos, setCampos] = useState([])
   const [grupos, setGrupos] = useState([])
@@ -61,6 +65,18 @@ export function EncontristaDetalhe() {
     navigator.clipboard.writeText(`${window.location.origin}/checkin/${encontrista.token}`)
     setMensagem('Link de check-in copiado!')
     setTimeout(() => setMensagem(null), 2000)
+  }
+
+  async function handleExcluirEncontrista() {
+    setExcluindo(true)
+    try {
+      await excluirEncontrista(id)
+      navigate('/admin/crm')
+    } catch (err) {
+      setMensagem('Erro ao excluir: ' + err.message)
+      setExcluindo(false)
+      setConfirmandoExclusao(false)
+    }
   }
 
   if (loading) return <AdminLayout><p className="text-secondary">Carregando...</p></AdminLayout>
@@ -143,6 +159,55 @@ export function EncontristaDetalhe() {
           {salvando ? 'Salvando...' : 'Salvar Encontrista'}
         </button>
       </form>
+
+      {role === 'admin' && (
+        <div className="delete-section">
+          <button
+            type="button"
+            className="btn btn-danger btn-full"
+            onClick={() => setConfirmandoExclusao(true)}
+          >
+            <Trash2 size={14} /> Excluir encontrista
+          </button>
+        </div>
+      )}
+
+      {confirmandoExclusao && (
+        <div className="detalhe-modal-overlay" onClick={() => !excluindo && setConfirmandoExclusao(false)}>
+          <div className="detalhe-modal" onClick={e => e.stopPropagation()}>
+            <div className="detalhe-modal-header">
+              <h3>Excluir encontrista</h3>
+              <button
+                className="detalhe-modal-close"
+                onClick={() => setConfirmandoExclusao(false)}
+                disabled={excluindo}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className="detalhe-modal-text">
+              Tem certeza que deseja excluir <strong>{encontrista?.nome}</strong>?{' '}
+              Essa ação não pode ser desfeita.
+            </p>
+            <div className="detalhe-modal-actions">
+              <button
+                className="btn btn-danger"
+                onClick={handleExcluirEncontrista}
+                disabled={excluindo}
+              >
+                {excluindo ? 'Excluindo...' : 'Excluir'}
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setConfirmandoExclusao(false)}
+                disabled={excluindo}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   )
 }
