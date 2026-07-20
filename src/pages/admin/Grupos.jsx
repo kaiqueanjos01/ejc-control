@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { Wand2, X, Check, FileText, Cake } from 'lucide-react'
+import { Wand2, X, Check, FileText, Cake, Search } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas } from '../../services/encontristas'
@@ -18,6 +18,7 @@ export function Grupos() {
   const [novoGrupo, setNovoGrupo] = useState({ nome: '', cor: '#6366f1', idadeMin: '', idadeMax: '' })
   const [criandoGrupo, setCriandoGrupo] = useState(false)
   const [sugestoesPendentes, setSugestoesPendentes] = useState(false)
+  const [busca, setBusca] = useState('')
 
   useEffect(() => {
     if (!encontroId) {
@@ -33,7 +34,15 @@ export function Grupos() {
   }, [encontroId, navigate])
 
   function getEncontristasDaColuna(grupoId) {
-    return encontristas.filter((e) => e.grupo_id === (grupoId ?? null))
+    const termo = busca.trim().toLowerCase()
+    return encontristas.filter((e) => {
+      if (e.grupo_id !== (grupoId ?? null)) return false
+      if (!termo) return true
+      return (
+        e.nome?.toLowerCase().includes(termo) ||
+        (e.telefone ?? '').toLowerCase().includes(termo)
+      )
+    })
   }
 
   async function handleDragEnd(result) {
@@ -159,6 +168,16 @@ export function Grupos() {
           </button>
         </form>
       )}
+
+      <div className="grupos-search">
+        <Search size={16} className="grupos-search-icon" />
+        <input
+          className="grupos-search-input"
+          placeholder="Buscar encontrista por nome ou telefone..."
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+        />
+      </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="kanban-container">
