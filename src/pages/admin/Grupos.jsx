@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { Wand2, X, Check, FileText, Cake, Search } from 'lucide-react'
+import { Wand2, X, Check, FileText, Cake, Search, Pencil } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas } from '../../services/encontristas'
-import { listarGrupos, criarGrupo, removerGrupo, atribuirGrupo, sugerirGrupos } from '../../services/grupos'
+import { listarGrupos, criarGrupo, atualizarGrupo, removerGrupo, atribuirGrupo, sugerirGrupos } from '../../services/grupos'
 import { calcularIdadePorDadosExtras } from '../../utils/idade'
 import './Grupos.css'
 
@@ -17,6 +17,7 @@ export function Grupos() {
   const [loading, setLoading] = useState(true)
   const [novoGrupo, setNovoGrupo] = useState({ nome: '', cor: '#6366f1', idadeMin: '', idadeMax: '' })
   const [criandoGrupo, setCriandoGrupo] = useState(false)
+  const [editandoId, setEditandoId] = useState(null)
   const [sugestoesPendentes, setSugestoesPendentes] = useState(false)
   const [busca, setBusca] = useState('')
 
@@ -69,19 +70,54 @@ export function Grupos() {
     setSugestoesPendentes(false)
   }
 
-  async function handleCriarGrupo(e) {
-    e.preventDefault()
-    const novo = await criarGrupo({
-      encontroId,
-      nome: novoGrupo.nome,
-      cor: novoGrupo.cor,
-      criterioIdadeMin: novoGrupo.idadeMin !== '' ? Number(novoGrupo.idadeMin) : null,
-      criterioIdadeMax: novoGrupo.idadeMax !== '' ? Number(novoGrupo.idadeMax) : null,
-      ordem: grupos.length,
-    })
-    setGrupos((prev) => [...prev, novo])
+  function abrirNovoGrupo() {
+    setEditandoId(null)
     setNovoGrupo({ nome: '', cor: '#6366f1', idadeMin: '', idadeMax: '' })
+    setCriandoGrupo(true)
+  }
+
+  function abrirEdicaoGrupo(col) {
+    setEditandoId(col.id)
+    setNovoGrupo({
+      nome: col.nome,
+      cor: col.cor || '#6366f1',
+      idadeMin: col.idadeMin != null ? String(col.idadeMin) : '',
+      idadeMax: col.idadeMax != null ? String(col.idadeMax) : '',
+    })
+    setCriandoGrupo(true)
+  }
+
+  function fecharForm() {
     setCriandoGrupo(false)
+    setEditandoId(null)
+    setNovoGrupo({ nome: '', cor: '#6366f1', idadeMin: '', idadeMax: '' })
+  }
+
+  async function handleSalvarGrupo(e) {
+    e.preventDefault()
+    const idadeMin = novoGrupo.idadeMin !== '' ? Number(novoGrupo.idadeMin) : null
+    const idadeMax = novoGrupo.idadeMax !== '' ? Number(novoGrupo.idadeMax) : null
+
+    if (editandoId) {
+      const atualizado = await atualizarGrupo(editandoId, {
+        nome: novoGrupo.nome,
+        cor: novoGrupo.cor,
+        criterio_idade_min: idadeMin,
+        criterio_idade_max: idadeMax,
+      })
+      setGrupos((prev) => prev.map((g) => (g.id === editandoId ? atualizado : g)))
+    } else {
+      const novo = await criarGrupo({
+        encontroId,
+        nome: novoGrupo.nome,
+        cor: novoGrupo.cor,
+        criterioIdadeMin: idadeMin,
+        criterioIdadeMax: idadeMax,
+        ordem: grupos.length,
+      })
+      setGrupos((prev) => [...prev, novo])
+    }
+    fecharForm()
   }
 
   async function handleRemoverGrupo(grupoId) {
@@ -118,14 +154,14 @@ export function Grupos() {
           <button className="btn btn-secondary" onClick={handleSugerir} disabled={sugestoesPendentes}>
             <Wand2 size={14} /> {sugestoesPendentes ? 'Processando...' : 'Sugerir por Idade'}
           </button>
-          <button className="btn btn-primary" onClick={() => setCriandoGrupo(true)}>
+          <button className="btn btn-primary" onClick={abrirNovoGrupo}>
             + Novo Grupo
           </button>
         </div>
       </div>
 
       {criandoGrupo && (
-        <form onSubmit={handleCriarGrupo} className="novo-grupo-form">
+        <form onSubmit={handleSalvarGrupo} className="novo-grupo-form">
           <input
             placeholder="Nome do grupo"
             value={novoGrupo.nome}
@@ -161,9 +197,9 @@ export function Grupos() {
             style={{ width: '90px' }}
           />
           <button type="submit" className="btn btn-primary">
-            Criar
+            {editandoId ? 'Salvar' : 'Criar'}
           </button>
-          <button type="button" onClick={() => setCriandoGrupo(false)} className="btn btn-secondary">
+          <button type="button" onClick={fecharForm} className="btn btn-secondary">
             Cancelar
           </button>
         </form>
@@ -192,9 +228,14 @@ export function Grupos() {
                       <span className="column-badge">{items.length}</span>
                     </div>
                     {!col.isDummy && (
-                      <button className="btn-remove" onClick={() => handleRemoverGrupo(col.id)} title="Remover grupo">
-                        <X size={14} />
-                      </button>
+                      <div className="column-actions">
+                        <button className="btn-remove" onClick={() => abrirEdicaoGrupo(col)} title="Editar grupo">
+                          <Pencil size={13} />
+                        </button>
+                        <button className="btn-remove" onClick={() => handleRemoverGrupo(col.id)} title="Remover grupo">
+                          <X size={14} />
+                        </button>
+                      </div>
                     )}
                   </div>
                   {(col.idadeMin != null || col.idadeMax != null) && (
