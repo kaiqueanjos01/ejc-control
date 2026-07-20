@@ -43,4 +43,29 @@ describe('sugerirGrupos', () => {
     }]
     expect(sugerirGrupos(encontristas, grupos)).toEqual({ e5: 'g3' })
   })
+
+  it('ignora grupos sem critério de idade (não vira pega-tudo)', () => {
+    // Um grupo sem idade configurada não pode receber todo mundo
+    const gruposComVazio = [
+      { id: 'sem_criterio', nome: 'Novo', criterio_idade_min: null, criterio_idade_max: null },
+      { id: 'g1', nome: 'Azul', criterio_idade_min: 14, criterio_idade_max: 16 },
+    ]
+    const encontristas = [{
+      id: 'e1',
+      dados_extras: { data_nascimento: `${anoAtual - 15}-01-01` }
+    }]
+    // 15 anos deve ir para g1, não para o grupo sem critério (que aparece antes)
+    expect(sugerirGrupos(encontristas, gruposComVazio)).toEqual({ e1: 'g1' })
+  })
+
+  it('não atribui ninguém quando só há grupos sem critério', () => {
+    const gruposSemCriterio = [
+      { id: 'x', nome: 'Novo', criterio_idade_min: null, criterio_idade_max: null },
+    ]
+    const encontristas = [{
+      id: 'e1',
+      dados_extras: { data_nascimento: `${anoAtual - 15}-01-01` }
+    }]
+    expect(sugerirGrupos(encontristas, gruposSemCriterio)).toEqual({})
+  })
 })

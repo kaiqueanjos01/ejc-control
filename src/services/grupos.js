@@ -63,6 +63,8 @@ export function sugerirGrupos(encontristas, grupos) {
     if (idade == null) continue
 
     const grupo = grupos.find(g =>
+      // grupo precisa ter ao menos um critério definido — sem critério não é alvo
+      (g.criterio_idade_min != null || g.criterio_idade_max != null) &&
       (g.criterio_idade_min == null || idade >= g.criterio_idade_min) &&
       (g.criterio_idade_max == null || idade <= g.criterio_idade_max)
     )
