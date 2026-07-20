@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { Wand2, X, Check, FileText } from 'lucide-react'
+import { Wand2, X, Check, FileText, Cake } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas } from '../../services/encontristas'
 import { listarGrupos, criarGrupo, removerGrupo, atribuirGrupo, sugerirGrupos } from '../../services/grupos'
+import { calcularIdade } from '../../utils/idade'
 import './Grupos.css'
 
 export function Grupos() {
@@ -200,7 +201,9 @@ export function Grupos() {
                           <span>Nenhum encontrista</span>
                         </div>
                       ) : (
-                        items.map((e, index) => (
+                        items.map((e, index) => {
+                          const idade = calcularIdade(e.dados_extras?.data_nascimento)
+                          return (
                           <Draggable key={e.id} draggableId={e.id} index={index}>
                             {(provided, snapshot) => (
                               <div
@@ -213,6 +216,10 @@ export function Grupos() {
                                 <div className="card-content">
                                   <h4 className="participant-name">{e.nome}</h4>
                                   <p className="participant-phone">{e.telefone}</p>
+                                  <p className="participant-age">
+                                    <Cake size={11} />
+                                    {idade != null ? `${idade} anos` : 'Idade não informada'}
+                                  </p>
                                   <div className="participant-meta">
                                     {e.checkin_at && (
                                       <span className="meta-badge checkin"><Check size={10} /> Check-in</span>
@@ -225,7 +232,8 @@ export function Grupos() {
                               </div>
                             )}
                           </Draggable>
-                        ))
+                          )
+                        })
                       )}
                       {provided.placeholder}
                     </div>
