@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase'
-import { calcularIdade } from '../utils/idade'
+import { calcularIdadePorDadosExtras } from '../utils/idade'
 
 export async function listarGrupos(encontroId) {
   const { data, error } = await supabase
@@ -53,12 +53,13 @@ export async function atribuirGrupo(encontristaId, grupoId) {
 }
 
 export function sugerirGrupos(encontristas, grupos) {
-  // Retorna map encontristaId → grupoId baseado na data_nascimento (dados_extras)
-  // Se não tiver data_nascimento ou critérios, retorna vazio
+  // Retorna map encontristaId → grupoId baseado na data de nascimento (dados_extras).
+  // A chave do campo varia por encontro (slug do label), então buscamos por
+  // qualquer chave contendo "nascimento". Sem data ou critérios, retorna vazio.
   const result = {}
 
   for (const e of encontristas) {
-    const idade = calcularIdade(e.dados_extras?.data_nascimento)
+    const idade = calcularIdadePorDadosExtras(e.dados_extras)
     if (idade == null) continue
 
     const grupo = grupos.find(g =>

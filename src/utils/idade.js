@@ -32,3 +32,24 @@ export function calcularIdade(dataNascimento, hoje = new Date()) {
 
   return idade < 0 ? null : idade
 }
+
+/**
+ * Extrai a idade a partir do JSONB `dados_extras` de um encontrista.
+ * A chave do campo de nascimento é slugificada do label do formulário e varia
+ * por encontro (ex.: `data_de_nascimento_obs_...`), mas sempre contém
+ * "nascimento". Varre as chaves procurando uma cujo valor seja uma data válida.
+ * @param {Object} dadosExtras - objeto dados_extras do encontrista
+ * @param {Date} [hoje] - data de referência (default: agora)
+ * @returns {number|null} idade em anos, ou null se não houver data de nascimento
+ */
+export function calcularIdadePorDadosExtras(dadosExtras, hoje = new Date()) {
+  if (!dadosExtras || typeof dadosExtras !== 'object') return null
+
+  for (const [chave, valor] of Object.entries(dadosExtras)) {
+    if (chave.toLowerCase().includes('nascimento')) {
+      const idade = calcularIdade(valor, hoje)
+      if (idade != null) return idade
+    }
+  }
+  return null
+}

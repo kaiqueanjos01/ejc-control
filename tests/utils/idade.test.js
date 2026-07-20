@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calcularIdade } from '../../src/utils/idade'
+import { calcularIdade, calcularIdadePorDadosExtras } from '../../src/utils/idade'
 
 describe('calcularIdade', () => {
   // Data de referência fixa para tornar os testes determinísticos: 20/07/2026
@@ -45,5 +45,38 @@ describe('calcularIdade', () => {
     const nascimento = new Date()
     nascimento.setFullYear(nascimento.getFullYear() - anos)
     expect(calcularIdade(nascimento)).toBe(anos)
+  })
+})
+
+describe('calcularIdadePorDadosExtras', () => {
+  const hoje = new Date(2026, 6, 20)
+
+  it('acha a data pela chave legada "data_nascimento"', () => {
+    expect(calcularIdadePorDadosExtras({ data_nascimento: '2001-01-01' }, hoje)).toBe(25)
+  })
+
+  it('acha a data por chave slugificada que contém "nascimento"', () => {
+    const dados = {
+      data_de_nascimento_obs_o_encontro__destinado_para_jovens_de_16_a_29_anos: '2006-03-10',
+      nome_completo: 'Fulano',
+    }
+    expect(calcularIdadePorDadosExtras(dados, hoje)).toBe(20)
+  })
+
+  it('ignora campos de texto que mencionam nascimento mas não são data', () => {
+    const dados = {
+      cidade_de_nascimento: 'São Paulo',
+      data_de_nascimento: '2001-01-01',
+    }
+    expect(calcularIdadePorDadosExtras(dados, hoje)).toBe(25)
+  })
+
+  it('retorna null quando não há campo de nascimento', () => {
+    expect(calcularIdadePorDadosExtras({ nome: 'Fulano', telefone: '119' }, hoje)).toBeNull()
+  })
+
+  it('retorna null para dados_extras ausente', () => {
+    expect(calcularIdadePorDadosExtras(null, hoje)).toBeNull()
+    expect(calcularIdadePorDadosExtras(undefined, hoje)).toBeNull()
   })
 })

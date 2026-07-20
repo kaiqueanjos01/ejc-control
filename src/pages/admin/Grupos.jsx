@@ -6,7 +6,7 @@ import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas } from '../../services/encontristas'
 import { listarGrupos, criarGrupo, removerGrupo, atribuirGrupo, sugerirGrupos } from '../../services/grupos'
-import { calcularIdade } from '../../utils/idade'
+import { calcularIdadePorDadosExtras } from '../../utils/idade'
 import './Grupos.css'
 
 export function Grupos() {
@@ -51,7 +51,7 @@ export function Grupos() {
     setSugestoesPendentes(true)
     const sugestoes = sugerirGrupos(encontristas, grupos)
     if (Object.keys(sugestoes).length === 0) {
-      alert('Nenhuma sugestão disponível. Verifique se os encontristas têm "data_nascimento" preenchida e os grupos têm critérios de idade.')
+      alert('Nenhuma sugestão disponível. Verifique se os encontristas têm data de nascimento preenchida e os grupos têm critérios de idade.')
       setSugestoesPendentes(false)
       return
     }
@@ -202,7 +202,7 @@ export function Grupos() {
                         </div>
                       ) : (
                         items.map((e, index) => {
-                          const idade = calcularIdade(e.dados_extras?.data_nascimento)
+                          const idade = calcularIdadePorDadosExtras(e.dados_extras)
                           return (
                           <Draggable key={e.id} draggableId={e.id} index={index}>
                             {(provided, snapshot) => (
