@@ -8,6 +8,7 @@ import { listarEncontristas, criarEncontrista, excluirEncontrista } from '../../
 import { useMaskInput } from '../../hooks/useMaskInput'
 import { applyMask } from '../../utils/masks'
 import { useAdminRole } from '../../hooks/useAdminRole'
+import { estaPresente } from '../../utils/checkin'
 import './CRM.css'
 
 export function CRM() {
@@ -40,9 +41,9 @@ export function CRM() {
       if (!matchBusca) return false
 
       if (status === 'sem_grupo') return !e.grupo_id
-      if (status === 'sem_checkin') return e.grupo_id && !e.checkin_at
-      if (status === 'incompleto') return e.grupo_id && e.checkin_at && Object.keys(e.dados_extras ?? {}).length === 0
-      if (status === 'completo') return e.grupo_id && e.checkin_at && Object.keys(e.dados_extras ?? {}).length > 0
+      if (status === 'sem_checkin') return e.grupo_id && !estaPresente(e)
+      if (status === 'incompleto') return e.grupo_id && estaPresente(e) && Object.keys(e.dados_extras ?? {}).length === 0
+      if (status === 'completo') return e.grupo_id && estaPresente(e) && Object.keys(e.dados_extras ?? {}).length > 0
       return false
     })
   }
@@ -277,7 +278,7 @@ export function CRM() {
                                 <div className="card-body">
                                   <p className="card-phone">{applyMask(encontrista.telefone ?? '', 'phone')}</p>
                                   <div className="card-status">
-                                    {encontrista.checkin_at && (
+                                    {estaPresente(encontrista) && (
                                       <span className="status-badge checkin">
                                         <Check size={10} /> Check-in
                                       </span>

@@ -7,6 +7,7 @@ import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas } from '../../services/encontristas'
 import { listarGrupos, criarGrupo, atualizarGrupo, removerGrupo, atribuirGrupo, sugerirGrupos } from '../../services/grupos'
 import { calcularIdadePorDadosExtras } from '../../utils/idade'
+import { estaPresente } from '../../utils/checkin'
 import './Grupos.css'
 
 export function Grupos() {
@@ -281,7 +282,7 @@ export function Grupos() {
                                     {idade != null ? `${idade} anos` : 'Idade não informada'}
                                   </p>
                                   <div className="participant-meta">
-                                    {e.checkin_at && (
+                                    {estaPresente(e) && (
                                       <span className="meta-badge checkin"><Check size={10} /> Check-in</span>
                                     )}
                                     {Object.keys(e.dados_extras ?? {}).length > 0 && (
