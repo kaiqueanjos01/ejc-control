@@ -1,5 +1,4 @@
 import { supabase } from '../lib/supabase'
-import { stripMask } from '../utils/masks'
 import { colunaDoDia } from '../utils/checkin'
 
 export async function criarEncontrista({ encontroId, nome, telefone }) {
@@ -77,21 +76,21 @@ export async function buscarEncontristasPorNome(encontroId, nome) {
   return data
 }
 
-/** Filtra encontristas cujo telefone (só dígitos) casa com o informado. Puro. */
-export function filtrarPorTelefone(encontristas, telefone) {
-  const alvo = stripMask(telefone)
-  if (!alvo) return []
-  return encontristas.filter((e) => stripMask(e.telefone) === alvo)
-}
-
-/** Busca encontristas do encontro que casam com o telefone informado. */
 export async function buscarEncontristasPorTelefone(encontroId, telefone) {
-  const { data, error } = await supabase
-    .from('encontristas')
-    .select('*, grupos(id, nome, cor)')
-    .eq('encontro_id', encontroId)
+  const { data, error } = await supabase.rpc('buscar_encontrista_checkin', {
+    p_encontro_id: encontroId,
+    p_telefone: telefone,
+  })
   if (error) throw error
-  return filtrarPorTelefone(data, telefone)
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    nome: r.nome,
+    telefone: r.telefone,
+    grupo_id: r.grupo_id,
+    checkin_dia1_at: r.checkin_dia1_at,
+    checkin_dia2_at: r.checkin_dia2_at,
+    grupos: r.grupo_nome ? { id: r.grupo_id, nome: r.grupo_nome, cor: r.grupo_cor } : null,
+  }))
 }
 
 /** Grava o check-in do dia (1 ou 2) e retorna o encontrista com o grupo. */

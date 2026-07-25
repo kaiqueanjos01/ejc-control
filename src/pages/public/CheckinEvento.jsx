@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { CheckCircle2, XCircle, PartyPopper } from 'lucide-react'
+import { CheckCircle2, PartyPopper } from 'lucide-react'
 import { buscarEncontristasPorTelefone, confirmarCheckin, buscarDiaAtivo } from '../../services/encontristas'
 import { fezCheckinNoDia } from '../../utils/checkin'
 import './Checkin.css'
@@ -14,6 +14,7 @@ export function CheckinEvento() {
   const [selecionado, setSelecionado] = useState(null)
   const [erro, setErro] = useState(null)
   const [processando, setProcessando] = useState(false)
+  const [jaEstavaFeito, setJaEstavaFeito] = useState(false)
 
   useEffect(() => {
     buscarDiaAtivo(encontroId).then(setDia).catch(() => setDia(1))
@@ -51,11 +52,13 @@ export function CheckinEvento() {
     setProcessando(true)
     try {
       if (fezCheckinNoDia(selecionado, dia)) {
+        setJaEstavaFeito(true)
         setEtapa('sucesso')
         return
       }
       const atualizado = await confirmarCheckin(selecionado.id, dia)
       setSelecionado(atualizado)
+      setJaEstavaFeito(false)
       setEtapa('sucesso')
     } catch {
       setErro('Não foi possível confirmar agora. Tente novamente.')
@@ -126,7 +129,7 @@ export function CheckinEvento() {
         {etapa === 'sucesso' && selecionado && (
           <div className="checkin-success">
             <div className="checkin-success-icon" aria-hidden="true">
-              {jaFeito ? <CheckCircle2 size={64} strokeWidth={1.5} /> : <PartyPopper size={64} strokeWidth={1.5} />}
+              {jaEstavaFeito ? <CheckCircle2 size={64} strokeWidth={1.5} /> : <PartyPopper size={64} strokeWidth={1.5} />}
             </div>
             <h1 className="checkin-title">{selecionado.nome}</h1>
             <p className="checkin-success-message">Presença do Dia {dia} confirmada!</p>
