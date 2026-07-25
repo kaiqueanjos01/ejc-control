@@ -270,3 +270,43 @@
   font-size: 0.8125rem;
   color: var(--text-secondary);
 }
+
+.checkin-qr-toggle {
+  margin-left: auto;
+}
+
+.checkin-qr-panel {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+}
+
+.checkin-qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.checkin-qr-card h3 { margin: 0; font-size: 1rem; color: var(--text-primary); }
+.checkin-qr-instru { margin: 0; font-size: 0.8125rem; color: var(--text-secondary); max-width: 280px; }
+.checkin-qr-url { margin: 0; font-size: 0.75rem; color: var(--text-muted); word-break: break-all; max-width: 280px; }
+
+/* Impressão: mostrar só o QR */
+@media print {
+  body * { visibility: hidden; }
+  #checkin-qr-print, #checkin-qr-print * { visibility: visible; }
+  #checkin-qr-print {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .checkin-qr-print-btn { display: none; }
+}

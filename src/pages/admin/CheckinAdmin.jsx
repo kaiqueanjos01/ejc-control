@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, Search } from 'lucide-react'
+import { Check, Search, QrCode, Printer } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
 import { listarEncontristas, atualizarEncontrista, definirDiaAtivo, buscarDiaAtivo } from '../../services/encontristas'
@@ -15,6 +16,7 @@ export function CheckinAdmin() {
   const [loading, setLoading] = useState(true)
   const [processando, setProcessando] = useState(null)
   const [dia, setDia] = useState(1)
+  const [mostrarQr, setMostrarQr] = useState(false)
 
   useEffect(() => {
     if (!encontroId) { navigate('/admin'); return }
@@ -35,6 +37,7 @@ export function CheckinAdmin() {
   }, [encontristas, busca])
 
   const totalFeito = encontristas.filter((e) => fezCheckinNoDia(e, dia)).length
+  const urlAutoCheckin = `${window.location.origin}/checkin-evento/${encontroId}`
 
   async function trocarDia(novoDia) {
     setDia(novoDia)
@@ -88,7 +91,24 @@ export function CheckinAdmin() {
           </button>
         </div>
         <span className="checkin-day-hint">QR registrando: <strong>Dia {dia}</strong></span>
+        <button className="btn btn-secondary btn-sm checkin-qr-toggle" onClick={() => setMostrarQr((v) => !v)}>
+          <QrCode size={14} /> {mostrarQr ? 'Ocultar QR' : 'QR de auto-check-in'}
+        </button>
       </div>
+
+      {mostrarQr && (
+        <div className="checkin-qr-panel" id="checkin-qr-print">
+          <div className="checkin-qr-card">
+            <h3>Auto-check-in do encontro</h3>
+            <p className="checkin-qr-instru">Aponte a câmera do celular para o QR e informe seu telefone.</p>
+            <QRCodeSVG value={urlAutoCheckin} size={220} />
+            <p className="checkin-qr-url">{urlAutoCheckin}</p>
+            <button className="btn btn-primary btn-sm checkin-qr-print-btn" onClick={() => window.print()}>
+              <Printer size={14} /> Imprimir
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="checkin-search-wrapper">
         <Search size={15} className="checkin-search-icon" />
