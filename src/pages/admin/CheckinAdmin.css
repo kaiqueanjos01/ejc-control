@@ -299,9 +299,10 @@
 
 /* Impressão: mostrar só o QR */
 @media print {
-  body * { visibility: hidden; }
-  #checkin-qr-print, #checkin-qr-print * { visibility: visible; }
-  #checkin-qr-print {
+  body:has(#checkin-qr-print) * { visibility: hidden; }
+  body:has(#checkin-qr-print) #checkin-qr-print,
+  body:has(#checkin-qr-print) #checkin-qr-print * { visibility: visible; }
+  body:has(#checkin-qr-print) #checkin-qr-print {
     position: absolute;
     inset: 0;
     display: flex;
