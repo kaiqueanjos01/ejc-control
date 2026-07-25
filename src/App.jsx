@@ -3,6 +3,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { Inscricao } from './pages/public/Inscricao'
 import { Ficha } from './pages/public/Ficha'
 import { Checkin } from './pages/public/Checkin'
+import { CheckinEvento } from './pages/public/CheckinEvento'
 import { Login } from './pages/admin/Login'
 import { SeletorEncontro } from './pages/admin/SeletorEncontro'
 import { CRM } from './pages/admin/CRM'
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/inscricao/:encontroId" element={<Inscricao />} />
         <Route path="/ficha/:token" element={<Ficha />} />
         <Route path="/checkin/:token" element={<Checkin />} />
+        <Route path="/checkin-evento/:encontroId" element={<CheckinEvento />} />
 
         {/* Admin */}
         <Route path="/admin/login" element={<Login />} />

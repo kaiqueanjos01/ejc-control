@@ -91,9 +91,14 @@ export function EncontristaDetalhe() {
         <div className="header-info">
           <h2 className="header-title">{encontrista.nome}</h2>
           <p className="header-phone">{applyMask(encontrista.telefone ?? '', 'phone')}</p>
-          {encontrista.checkin_at && (
+          {encontrista.checkin_dia1_at && (
             <div className="badge badge-success">
-              <Check size={11} /> Check-in: {new Date(encontrista.checkin_at).toLocaleString('pt-BR')}
+              <Check size={11} /> Dia 1: {new Date(encontrista.checkin_dia1_at).toLocaleString('pt-BR')}
+            </div>
+          )}
+          {encontrista.checkin_dia2_at && (
+            <div className="badge badge-success">
+              <Check size={11} /> Dia 2: {new Date(encontrista.checkin_dia2_at).toLocaleString('pt-BR')}
             </div>
           )}
         </div>

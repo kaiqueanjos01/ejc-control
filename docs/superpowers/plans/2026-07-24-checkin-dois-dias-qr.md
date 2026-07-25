@@ -42,8 +42,10 @@
 
 ## Task 1: Migração de banco (dois dias + dia ativo)
 
+> Nota: numerada como `010` (o `009` já era usado por `009_admin_delete_encontrista.sql`).
+
 **Files:**
-- Create: `supabase/migrations/009_checkin_dois_dias.sql`
+- Create: `supabase/migrations/010_checkin_dois_dias.sql`
 
 **Interfaces:**
 - Produces: colunas `encontristas.checkin_dia1_at`, `encontristas.checkin_dia2_at` (timestamptz, nullable); coluna `encontros.checkin_dia_ativo` (smallint, not null, default 1). Remove `encontristas.checkin_at`.
