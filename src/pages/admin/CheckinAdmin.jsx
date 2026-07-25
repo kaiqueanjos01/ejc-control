@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { Check, Search } from 'lucide-react'
 import { AdminLayout } from '../../components/AdminLayout'
 import { useEncontro } from '../../hooks/useEncontro'
-import { listarEncontristas, atualizarEncontrista } from '../../services/encontristas'
+import { listarEncontristas, atualizarEncontrista, definirDiaAtivo, buscarDiaAtivo } from '../../services/encontristas'
+import { fezCheckinNoDia, colunaDoDia } from '../../utils/checkin'
 import './CheckinAdmin.css'
 
 export function CheckinAdmin() {
@@ -13,11 +14,15 @@ export function CheckinAdmin() {
   const [busca, setBusca] = useState('')
   const [loading, setLoading] = useState(true)
   const [processando, setProcessando] = useState(null)
+  const [dia, setDia] = useState(1)
 
   useEffect(() => {
     if (!encontroId) { navigate('/admin'); return }
-    listarEncontristas(encontroId)
-      .then(setEncontristas)
+    Promise.all([listarEncontristas(encontroId), buscarDiaAtivo(encontroId)])
+      .then(([lista, diaAtivo]) => {
+        setEncontristas(lista)
+        setDia(diaAtivo)
+      })
       .finally(() => setLoading(false))
   }, [encontroId, navigate])
 
@@ -29,14 +34,21 @@ export function CheckinAdmin() {
     )
   }, [encontristas, busca])
 
-  const totalFeito = encontristas.filter(e => e.checkin_at).length
+  const totalFeito = encontristas.filter((e) => fezCheckinNoDia(e, dia)).length
+
+  async function trocarDia(novoDia) {
+    setDia(novoDia)
+    await definirDiaAtivo(encontroId, novoDia)
+  }
 
   async function handleCheckin(encontrista) {
-    if (encontrista.checkin_at) return
+    if (fezCheckinNoDia(encontrista, dia)) return
     setProcessando(encontrista.id)
-    await atualizarEncontrista(encontrista.id, { checkin_at: new Date().toISOString() })
-    setEncontristas(prev =>
-      prev.map(e => e.id === encontrista.id ? { ...e, checkin_at: new Date().toISOString() } : e)
+    const coluna = colunaDoDia(dia)
+    const agora = new Date().toISOString()
+    await atualizarEncontrista(encontrista.id, { [coluna]: agora })
+    setEncontristas((prev) =>
+      prev.map((e) => (e.id === encontrista.id ? { ...e, [coluna]: agora } : e))
     )
     setProcessando(null)
   }
@@ -58,6 +70,24 @@ export function CheckinAdmin() {
             <span className="checkin-counter-label">Total</span>
           </div>
         </div>
+      </div>
+
+      <div className="checkin-day-selector">
+        <div className="checkin-day-tabs" role="tablist">
+          <button
+            className={`checkin-day-tab ${dia === 1 ? 'active' : ''}`}
+            onClick={() => trocarDia(1)}
+          >
+            Dia 1
+          </button>
+          <button
+            className={`checkin-day-tab ${dia === 2 ? 'active' : ''}`}
+            onClick={() => trocarDia(2)}
+          >
+            Dia 2
+          </button>
+        </div>
+        <span className="checkin-day-hint">QR registrando: <strong>Dia {dia}</strong></span>
       </div>
 
       <div className="checkin-search-wrapper">
@@ -97,7 +127,7 @@ export function CheckinAdmin() {
                 </tr>
               ) : (
                 filtrados.map(e => {
-                  const feito = !!e.checkin_at
+                  const feito = fezCheckinNoDia(e, dia)
                   return (
                     <tr key={e.id} className={feito ? 'row-done' : ''}>
                       <td>

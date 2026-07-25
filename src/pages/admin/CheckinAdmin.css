@@ -231,3 +231,42 @@
   .checkin-table th:nth-child(3),
   .checkin-table td:nth-child(3) { display: none; }
 }
+
+.checkin-day-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.checkin-day-tabs {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.checkin-day-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.checkin-day-tab.active {
+  background: var(--primary);
+  color: white;
+}
+
+.checkin-day-hint {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
