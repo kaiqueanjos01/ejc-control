@@ -52,18 +52,6 @@ export async function atualizarEncontrista(id, updates) {
   return data
 }
 
-export async function fazerCheckin(token) {
-  const { data, error } = await supabase
-    .from('encontristas')
-    .update({ checkin_at: new Date().toISOString() })
-    .eq('token', token)
-    .is('checkin_at', null)
-    .select('*, grupos(id, nome, cor)')
-    .single()
-  if (error) throw error
-  return data
-}
-
 export async function buscarEncontristasPorNome(encontroId, nome) {
   const { data, error } = await supabase
     .from('encontristas')

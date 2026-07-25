@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { CheckCircle2, PartyPopper, XCircle } from 'lucide-react'
-import { buscarEncontristaPorToken, fazerCheckin } from '../../services/encontristas'
+import { buscarEncontristaPorToken, confirmarCheckin, buscarDiaAtivo } from '../../services/encontristas'
+import { fezCheckinNoDia } from '../../utils/checkin'
 import './Checkin.css'
 
 export function Checkin() {
@@ -10,36 +11,47 @@ export function Checkin() {
   const [loading, setLoading] = useState(true)
   const [erro, setErro] = useState(null)
   const [jaFeito, setJaFeito] = useState(false)
+  const [dia, setDia] = useState(1)
+  const [processando, setProcessando] = useState(false)
 
   useEffect(() => {
-    async function processar() {
+    async function carregar() {
       try {
         const e = await buscarEncontristaPorToken(token)
-        if (e.checkin_at) {
-          setEncontrista(e)
-          setJaFeito(true)
-          setLoading(false)
-          return
-        }
-        const atualizado = await fazerCheckin(token)
-        setEncontrista(atualizado)
+        const diaAtivo = await buscarDiaAtivo(e.encontro_id)
+        setDia(diaAtivo)
+        setEncontrista(e)
+        setJaFeito(fezCheckinNoDia(e, diaAtivo))
       } catch {
         setErro('QR code inválido ou encontrista não encontrado.')
       } finally {
         setLoading(false)
       }
     }
-    processar()
+    carregar()
   }, [token])
+
+  async function handleConfirmar() {
+    setProcessando(true)
+    try {
+      const atualizado = await confirmarCheckin(encontrista.id, dia)
+      setEncontrista(atualizado)
+      setJaFeito(true)
+    } catch {
+      setErro('Não foi possível confirmar agora. Tente novamente.')
+    } finally {
+      setProcessando(false)
+    }
+  }
 
   if (loading) {
     return (
       <div className="checkin-container">
         <div className="checkin-loading">
           <div className="checkin-spinner" role="status" aria-label="Carregando">
-            <span className="sr-only">Processando check-in...</span>
+            <span className="sr-only">Carregando...</span>
           </div>
-          <p className="text-muted">Processando check-in...</p>
+          <p className="text-muted">Carregando...</p>
         </div>
       </div>
     )
@@ -59,35 +71,36 @@ export function Checkin() {
   }
 
   const grupo = encontrista?.grupos
-  const corGrupo = grupo?.cor ?? 'var(--gray-500)'
 
   return (
     <div className="checkin-container">
       <div className="checkin-content">
-        <div className="checkin-icon" aria-hidden="true">
-          {jaFeito
-            ? <CheckCircle2 size={72} strokeWidth={1.5} />
-            : <PartyPopper size={72} strokeWidth={1.5} />
-          }
-        </div>
-        <h1 className="checkin-title">
-          {jaFeito ? 'Check-in já realizado' : 'Check-in confirmado!'}
-        </h1>
-        <p className="checkin-name">{encontrista?.nome}</p>
-        {grupo && (
-          <div
-            className="checkin-group-card"
-            style={{
-              backgroundColor: corGrupo + '15',
-              borderColor: corGrupo,
-              color: corGrupo
-            }}
-          >
-            {grupo.nome}
+        {!jaFeito ? (
+          <div className="checkin-form">
+            <div className="checkin-icon" aria-hidden="true">
+              <PartyPopper size={72} strokeWidth={1.5} />
+            </div>
+            <h1 className="checkin-title">{encontrista.nome}</h1>
+            {grupo && (
+              <p className="checkin-grupo" style={{ '--gc': grupo.cor }}>
+                Grupo: <strong>{grupo.nome}</strong>
+              </p>
+            )}
+            <button className="btn btn-primary" onClick={handleConfirmar} disabled={processando}>
+              {processando ? 'Confirmando...' : `Confirmar presença no Dia ${dia}`}
+            </button>
           </div>
-        )}
-        {!grupo && (
-          <p className="checkin-no-group">Grupo ainda não atribuído</p>
+        ) : (
+          <div className="checkin-success">
+            <div className="checkin-success-icon" aria-hidden="true"><CheckCircle2 size={72} strokeWidth={1.5} /></div>
+            <h1 className="checkin-title">{encontrista.nome}</h1>
+            <p className="checkin-success-message">Presença do Dia {dia} confirmada!</p>
+            {grupo && (
+              <p className="checkin-grupo" style={{ '--gc': grupo.cor }}>
+                Seu grupo: <strong>{grupo.nome}</strong>
+              </p>
+            )}
+          </div>
         )}
       </div>
     </div>
